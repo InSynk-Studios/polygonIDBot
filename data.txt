@@ -1,59 +1,4453 @@
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+Polygon ID’s identity infrastructure facilitates trusted and secure
+relationships between apps and users, following the principles of
+self-sovereign identity and privacy by default. Polygon ID enables
+organizations on one side to issue verifiable credentials about users,
+and organizations, on the other side, to verify those claims via a suite
+of tools created for each member of the SSI ecosystem.
+
+Why Polygon ID?
+
+Polygon ID, with the help of zero-knowledge proofs, lets users prove
+their identity without the need of exposing their private information.
+This ensures both the Freedom of Expression and Privacy by Default
+(user’s identities are secured by zero-knowledge cryptography).
+
+Core Concepts of Polygon ID: Verifiable Credentials, Identity Holder, Issuer and Verifier
+
+Every identity is identified by a unique identifier called DID
+(Decentralized Identifier). Every identity-based information is
+represented via Verifiable Credentials (VCs). In the simplest terms, a
+VC represents any type of information related to an
+individual/enterprise/object. The VC could be as simple as the age of
+the entity or the highest degree held by it. It could also be a
+membership certificate issued by a DAO, for instance.
+
+The toolset made available by Polygon ID is fully compliant with the W3C
+standards. We have a definition spec. for the Polygon ID DID method.
+
+The architecture of the framework is composed of three modules: Identity
+Holder, Issuer, and Verifier. These three, together, form what we call
+the Triangle of Trust. Let us see what role each entity plays in Polygon
+ID.
+
+1.  Identity Holder: An entity that holds claims in its Wallet. A VC, as
+    mentioned above, is issued by an Issuer to the Holder. The Identity
+    Holder generates zero-knowledge proofs of the VCs issued and
+    presents these proofs to the Verifier, which verifies that the proof
+    is authentic and matches specific criteria.
+
+2.  Issuer: An entity (person, organization, or thing) that issues VCs
+    to the Holders. VCs are cryptographically signed by the Issuer.
+    Every VC comes from an Issuer.
+
+3.  Verifier: A Verifier verifies the proof presented by a Holder. It
+    requests the Holder to send a proof based on the VCs they hold in
+    their wallet. While verifying a proof, the Verifier performs a set
+    of checks, for example that the VC was signed by the expected Issuer
+    and that the VC matches the criteria requested by the Verifier. This
+    verification process can happen either off-chain or on-chain.
+
+The simplest example of a Verifier is a bar that wants to verify if a
+client is over 18. In the real world, the Identity Holder would need to
+provide an ID and show all their personal information. With Polygon ID,
+they only need to pass a proof.
+
+A core concept here is the trust that must exist between a Verifier and
+an Issuer: the fact that the information contained inside a VC is
+cryptographically verifiable doesn’t guarantee it’s true. The Issuer
+must be a trusted and reputable party so that Verifier can consume the
+VCs originated by that Issuer.
+
+Role of a Wallet
+
+A Wallet plays a crucial role in the seamless exchange of VCs with the
+Issuer, on one hand, and proofs with the Verifier, on the other. As
+stated above, an Identity Holder carries their personal data, in the
+form of VC, within their wallet. At its core, the wallet stores the
+private key of a user, fetch VCs from the Issuer, and create
+zero-knowledge proofs to be presented to the Verifier. Being the carrier
+of the sensitive information, the Wallet has been designed to ensure
+that the identity of its Holder is protected and preserved, and no
+sensitive data can be revealed to the third party without the consent of
+the Holder.
+
+What Can you Achieve Using Polygon ID?
+
+1.  Privacy using Zero-Knowledge Proofs: An Identity Holder, using
+    zero-knowledge proofs, can keep thier personal data private. During
+    the process of VC verification, it just needs to show a proof that
+    they are the owner of a VC that matches certain criteria without
+    letting the Verifier know of the actual VC. For example, an Identity
+    Holder can prove to a Verifier authority that they are above 18
+    years of age by presenting the proof without revealing their actual
+    age. This ensures minimum data exposure and hence confirms the
+    safety of any sensitive data. Another aspect of privacy comes from
+    the fact that the Issuer would not be able to track the usage of VCs
+    by an individual once it has been issued.
+
+2.  Off-Chain and On-Chain Verification: Verification of proofs can be
+    done either off-chain or on-chain via Smart Contracts. For example,
+    developers can set up a contract that airdrops tokens only to users
+    that meet certain criteria based on their VCs.
+
+3.  Self-Sovereignty: Polygon ID renders self-sovereignty in the hands
+    of the user. The user is the only custodian of their private keys;
+    user-controlled data can be shared with third parties without taking
+    any permission from the Issuer that has issued the VCs to the user.
+
+4.  Transitive Trust: A transitive trust between the actors of the
+    triangle means that the trust between two entities in one domain or
+    context can be easily extended to other domains or contexts. For
+    instance, the information generated by an Issuer can be conveniently
+    used by more than one Verifier without asking for permission. Along
+    similar lines, an Identity Holder can build up their trust by
+    collecting multiple credentials from different Issuers in one
+    digital wallet.
+
+Polygon ID and Iden3
+
+Iden3 is the open-source protocol at the basis of Polygon ID. The
+protocol defines on a low-level how the parties listed above communicate
+and interact with each other. Polygon ID is an abstraction layer to
+enable developers to build applications leveraging the Iden3 protocol.
+
+Further Resources On Polygon ID
+
+-   Polygon University - Courses on Polygon ID
+-   Polygon ID Youtube Playlists
+-   Polygon ID DID Method Overview at SSI Meetup (April 2023)
+-   Adding Verifiable Credentials to your crypto wallet - Eth CC July
+    2023
+-   The Future of Identity is Self-Sovereign: Build a dapp with Polygon
+    ID - ETH Global - November 2022
+-   A Deep Dive into Polygon ID - ETH Vietnam - November 2022
+-   Identity Layer for Web3 - Paris - July 2022
+
+Further Resources On Verifiable Credentials
+
+-   Verifiable Credentials: The Ultimate Guide
+-   Understanding and Using Verifiable Credentials
+-   Polygon ID DID Method Specification
+
+------------------------------------------------------------------------
+-e 
+
+---
+
+
+There are 2 types of relationships between credentials and their
+issuers:
+
+-   Issuer DID anchoring: as an issuer of credentials, issuers can
+    choose to just leave their identifier in the genesis state. However,
+    it is recommended that they publish their issuer DID on-chain for
+    visibility and traceability purposes. This is done by calling the
+    “Transit State function” so that the issuer can register their
+    identity state and identifier in the identity StateV2.sol contract.
+    At this point, we can consider that the Issuer DID is anchored.
+
+-   Credential Linkage: after the issuer’s DID is anchored to the
+    blockchain, then the issuer can generate credentials with its
+    identifier and signature (using either the BJJ or MTP, see
+    credential issuance methods for more). At this point, we can
+    consider that the credential has a linkage to the blockchain in
+    which the issuer registered its DID.
+
+[img]
+
+If the credential is issued using the MTP method, then the credential
+data is also “anchored” (via an indirect merkle tree proof) to the
+blockchain. Otherwise, only the Issuer’s DID is anchored to the
+blockchain.
+
+Credential Linkage to Different Blockchains
+
+Credentials could be linked to different Ethereum Virtual Machine (EVM)
+blockchains, they are not limited to only being linked to the Polygon
+Mainnet when they are issued. For instance, credentials could be linked
+to a Supernets chain or another EVM chain. The issuer state contract
+could be deployed to other EVM-compatible chains, and verifiers could
+validate the proofs from these credentials as long as they have access
+to the particular chain.
+
+Credential linkage is only supported for a single chain for each
+credential (a credential cannot be linked to multiple blockchains at the
+same time).
+
+[img]
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+This tutorial is a quick demonstration of some of Polygon ID’s main
+functionalities. To illustrate how Polygon ID works, we will walk you
+through some of its products and tools by following along a simple POAP
+use case. POAP stands for Proof of Attendance Protocol, which is used to
+prove that someone has taken part in a given event.
+
+This guide will briefly touch on the 3 roles of the Triangle of Trust,
+namely the Identity Holder, the Issuer and the Verifier. For that, we
+will take the case of an individual who needs to prove that they were
+able to participate in a particular event.
+
+These are the steps we will cover in this article:
+
+1.  Set up a Polygon ID wallet
+2.  Issue a new credential to attest to the ID Holder’s attendance to
+    the event
+3.  Fetch the newly created credential
+4.  Verify the credential validity
+
+Set up a Polygon ID wallet
+
+As an Identity Holder, the individual who wants to have a credential to
+prove his age, for example, will need an application that can hold their
+credentials. In our case, we will be using the Polygon ID Wallet.
+
+You can also use any Polygon ID compatible wallet. Please, check our
+Ecosystem page for other options.
+
+To get started with the Polygon ID Wallet, download the Polygon ID
+Wallet App and create an Identity:
+
+-   For Android: Polygon ID on Google Play
+-   For iOS: Polygon ID on the App Store
+
+Polygon ID wallet is an implementation of the Wallet SDK, as a way of
+showcasing its possibilities. Head to the Polygon ID SDK documentation
+to know more about how it works.
+
+The process from downloading to creating an identity on the Polygon ID
+Wallet is just as it is shown below. You need to download the app,
+create a wallet, set up a PIN number and the wallet is ready to be used.
+
+“Mumbai” is selected instead of “Polygon Main”.
+
+    <img src={useBaseUrl("img/quick-start-demo/quick-start-demo-wallet.png")}></img>
+
+This demo is using Polygon’s Mumbai testnet. Go to the gear icon at the
+top right and ensure “Polygon Mumbai” is selected instead of “Polygon
+Main”.
+
+    <img width="300" src={useBaseUrl("img/quick-start-demo/settings-mumbai.jpeg")}></img>
+
+Issue a new credential to attest to the ID Holder’s event attendance
+
+A trusted entity, for instance, a private institution will now play the
+role of an issuer. It will be responsible for creating the credential
+and sending it to the ID Holder.
+
+We are using the Issuer Node UI testing environment to manage
+credentials. This is the place where the trusted entity can create
+credentials, manage schemas and generate connections.
+
+However, if you are using a new credential type, you actually need to
+create a schema for that credential, which basically is the set of JSON
+files that gather all the attributes of that specific credential.
+
+To facilitate this issuance process, we have already created the
+credential schema whose URLs are the following:
+
+-   JSON schema URL
+    ipfs://QmTSwnuCB9grYMB2z5EKXDagfChurK5MiMCS6efrRbsyVX
+-   JSON-LD Context
+    ipfs://QmdH1Vu79p2NcZLFbHxzJnLuUHJiMZnBeT7SNpLaqK7k9X
+
+To learn how to set up your own issuer environment by deploying an
+issuer node, visit the Issuer section in the documentation.
+
+The schema used in this demo was built using the Polygon ID Schema
+Builder and is available on the Polygon ID Schema Explorer. Learn more
+about creating new schemas on the Schema Builder UI guide.
+
+Issue the credential
+
+With the new schema in hand, the issuer should now be able to generate a
+credential.
+
+1.  First, go to the the Issuer Node UI testing environment.
+
+    :::warning
+
+    This Issuer Node is publicly available and used only for testing
+    purposes. Do not use personal or sensitive data. All data is deleted
+    every 48 hours.
+
+    :::
+
+2.  Now you need to import the schema. Click on Import Schema and paste
+    our previously generated schema IPFS address
+    ipfs://QmTSwnuCB9grYMB2z5EKXDagfChurK5MiMCS6efrRbsyVX:
+
+         <img width="100%" src={useBaseUrl("img/quick-start-demo/import-schema.png")}></img>
+
+    You may preview the schema and then Import it.
+
+3.  You can go ahead and click on Issue Credential in the top righ-hand
+    corner. Choose Credential Link on the next page and your schema on
+    the dropdown menu (“POAP01”, in our case). For this credential, we
+    are providing a proof of attendance to an event in Paris:
+
+         <img width="500" src={useBaseUrl("img/quick-start-demo/create-credential.png")}></img>
+
+4.  After you click on Create Credential Link, you can also click on
+    View Link on the next screen to check the generated QR code.
+
+         <img width="500" src={useBaseUrl("img/quick-start-demo/qr-code.png")}></img>
+
+Fetch the newly created credential
+
+Now we are back to the ID Holder role. They will use their mobile
+application to authenticate themselves by scanning the QR code generated
+by the issuer in the last step.
+
+    <img width="300" src={useBaseUrl("img/quick-start-demo/quick-fetch-1.jpeg")}></img>
+
+Connect to the issuer:
+
+    <img width="300" src={useBaseUrl("img/quick-start-demo/quick-fetch-2.jpeg")}></img>
+
+This will instantly trigger a notification on the mobile which will look
+like this:
+
+    <img width="300" src={useBaseUrl("/img/quick-start-demo/quick-notification.jpeg")}></img>
+
+Accept the credential:
+
+    <img width="300" src={useBaseUrl("img/quick-start-demo/quick-fetch-4.jpeg")}></img>
+
+The ID Holder successfully retrieved the credential and it is visible on
+the app:
+
+    <img width="300" src={useBaseUrl("img/quick-start-demo/quick-fetch-6.jpeg")}></img>
+
+Verify the ID holder credential
+
+Here comes the third role in this tutorial: the verifier. This could be
+represented by an organization that needs to check the accuracy of
+someone’s credentials. In our use case, this organization wants to
+verify whether the ID holder actually attended our made-up Paris event.
+
+Here are the steps to verify the credential:
+
+1.  Visit the Verifier website. As we are using a newly-created
+    credential type, you need to choose Custom on the dropdown menu.
+    Click on Sign In.
+
+         <img width="600" src={useBaseUrl("img/quick-start-demo/verifier-lp.png")}></img>
+
+2.  Now you will again make use of the JSON-LD URL we have also
+    provided: ipfs://QmdH1Vu79p2NcZLFbHxzJnLuUHJiMZnBeT7SNpLaqK7k9X.
+    Here is how the query should look like:
+
+         <img width="600" src={useBaseUrl("img/quick-start-demo/verifier-query.png")}></img>
+
+3.  After clicking on Submit, you should scan the resulting QR code and
+    follow the instructions on the mobile app.
+
+         <img width="300" src={useBaseUrl("img/quick-start-demo/verifier-request.jpeg")}></img>
+
+4.  The process of generating the proof is then started:
+
+         <img width="300" src={useBaseUrl("img/quick-start-demo/verifier-proof.jpeg")}></img>
+
+5.  And finally, the proof will be validated by the Verifier.
+
+This was a quick demonstration of Polygon ID’s basic functionalities.
+However, Polygon ID is far more complex than this. It offers a range of
+SSI-focused tools that allow for decentralized identity and verifiable
+credentials management.
+-e 
+
+---
+
+
+Polygon ID Smart Contracts - Github
+
+Blockchain addresses
+
+For situations where one needs to publish data on the blockchain, such
+as creating an MTP-type credential, generating on-chain proofs and
+making credential revocations effective, it is important to have the
+following Smart Contracts addresses:
+
+-   Testnet(mumbai) -> 0x134B1BE34911E39A8397ec6289782989729807a4
+-   Mainnet -> 0x624ce98D2d27b20b8f8d521723Df8fC4db71D79D
+
+Validator addresses
+
+Current addresses on Polygon Mumbai testnet. (V1.0.1)
+
+  ------------------------------------------------------------------------------------------------------
+                                   Sig                                          MTP
+  ------------ -------------------------------------------- --------------------------------------------
+    Verifier    0x8024014f73BcCAEe048784d835A36c49e96F2806   0xF71d97Fc0262bB2e5B20912a6861da0B617a07Aa
+
+   Validators   0x1E4a22540E293C0e5E8c33DAfd6f523889cFd878   0x0682fbaA2E4C478aD5d24d992069dba409766121
+
+     ERC20      0xD75638D319B1aE2a9491DC61f87a800AD362D168   0xD75638D319B1aE2a9491DC61f87a800AD362D168
+    example                  (request id = 1)                             (request id = 2)
+  ------------------------------------------------------------------------------------------------------
+
+Current addresses on Polygon Main (V1.0.1)
+
+  ------------------------------------------------------------------------------------------------------
+                                   Sig                                          MTP
+  ------------ -------------------------------------------- --------------------------------------------
+    Verifier    0xaf48CC9C2Ef728b7c4A903c9f5472498f8AED5E1   0x1008De1794be8fAba4fc33db6dff59B1d1Ac3a64
+
+   Validators   0x35178273C828E08298EcB0C6F1b97B3aFf14C4cb   0x8c99F13dc5083b1E4c16f269735EaD4cFbc4970d
+
+     ERC20      0xa5f08979370AF7095cDeDb2B83425367316FAD0B   0xa5f08979370AF7095cDeDb2B83425367316FAD0B
+    example               (request id = 1 (sig))                       (request id = 2 (mtp)
+  ------------------------------------------------------------------------------------------------------
+
+The Smart Contracts above are updated and the legacy mumbai/main
+contracts should not be used anymore. However, if needed, support is
+still provided: v.1.1.1.
+
+CredentialAtomicQuerySigValidator
+
+CredentialAtomicQuerySigValidator.sol - Github
+
+The CredentialAtomicQuerySigValidator contract is used to verify any
+credential-related zk proof generated by user using the
+credentialAtomicQuerySigV2OnChain circuit. The contract only verifies
+proofs based on credential of type Signature
+
+The core of the contract is its verify function that takes the proof
+generated by a user and executes a set of verifications:
+
+-   Verifies that the proof is valid. This verification is actually
+    performed inside the verifierSig contract which is automatically
+    generated using circom.
+-   Verifies that the input used to generate the proof matches the query
+    associated to that specific Request.
+-   Verifies that the user’s and the Issuer’s identity states are valid
+    based on the State Contract.
+
+  The CredentialAtomicQuerySigValidator executes the same set of
+  verifications of the Verification Library. The former is required when
+  performing on-chain verification while the latter is required for
+  off-chain verification.
+
+CredentialAtomicQueryMTPValidator
+
+CredentialAtomicQueryMTPValidator.sol - Github
+
+Performs the same set of verifications of the
+CredentialAtomicQuerySigValidator but for credential of type MTP.
+
+  Further protocol related contracts can be found at Iden3 - Smart
+  Contracts
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+The Query Builder is an interactive way of creating verification queries
+through an intuitive form with all the fields a comprehensive query
+might have.
+
+Verifiers can create a set of rules that users need to meet to prove
+their identity using their existing credentials. These rules could range
+from being a member of a specific organization to being at a certain
+age. Polygon ID makes it easy and secure for users to prove their
+identity by using these rules for authentication purposes.
+
+By providing a standardized interface for query creation, a user
+interface can help ensure that queries are created in a consistent,
+uniform and error-free way across different users and organizations.
+Also, rather than requiring users to learn the ZK query language, a user
+interface can serve as a more intuitive and user-friendly alternative to
+create queries.
+
+The Query Builder contains the following fields:
+
+-   Proof type: credential issuance methods. SIG for Credentials with
+    Baby JubJub(BJJ) Key Signatures and MTP for credentials with Merkle
+    Tree Proof.
+-   URL to JSON-LD Context: this should be the address where the JSON-LD
+    Context is stored, containing schema data.
+-   Schema Type: this is the field used to select the schema which the
+    query is about, for credentials that have more than one schema type.
+-   Issuer DID: refers to the identification of the issuer that
+    generated the credential. Use * to consider any issuers. We
+    currently support only one value, which means that you can either
+    choose one particular Issuer DID or use * to accept any.
+-   Attribute field: this is the attribute the query is based on. Each
+    query supports only one attribute.
+-   Query type: the two options of queries that are available, a
+    Condition or Selective disclosure. Condition depends on a value and
+    an operator; that would be the case of a query requesting a user to
+    be older than 21 years old. Selective Disclosure is the feature used
+    to ask the ID holder for a specific piece of their data.
+-   Operator: this is the relation between the attribute and the value.
+-   Value: this is the value the operator refers to.
+-   Skip Revocation Check: will skip the check to see if a credential
+    was revoked or not.
+
+You can see here how these fields should be filled for a verifier who
+needs to check whether the credential holder is older than 21 years old:
+
+The Query Builder outcome should look like this:
+
+Then, one can copy and paste the snippet on the verifier API
+GetAuthRequest() function.
+
+The idea behind the Query Builder is to facilitate the query elaboration
+process by generating the whole section relative to “Request for
+specific proof” of the auth request endpoint code, as it can be seen on
+the Run a Verifier tutorial, more specifically on point 3.
+-e 
+
+---
+
+
+Selective Disclosure
+
+There are two types of proof requests: private proof and selective
+disclosure. In private proof requests, the credential attribute values
+are not disclosed, and the response is true/false of the requested
+value. In selective disclosure requests, the verifier asks for one
+attribute value from the credential to be disclosed.
+
+The selective disclosure has almost the same technical flow as the proof
+request, the only difference is that the query in the QR code from the
+proof request of the verifier contains a different format. The SDK just
+calls the authenticate method from iden3comm.dart with the
+iden3MessageEntity as a parameter.
+
+Check a query sample here.
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
 Introduction
-In the fast-paced world of e-commerce, visual appeal is king 👑. We propose an innovative solution using Stable Diffusion and pose estimation techniques to create lifelike and diverse model images that resonate with customers globally.
-🎯 Objective
-Our objective is to enhance product listings with AI-generated images that offer cost-effective scalability and a personalized shopping experience, leading to increased engagement and conversions.
-Implementation Steps
-1. Infrastructure Setup 🏗️
-We will establish a cloud-based infrastructure with the necessary computational power to support our AI models. This setup will include high-performance GPUs on platforms like GCP or AWS, ensuring the ability to handle intensive image generation and processing tasks. The environment needs to be scalable, secure, and optimized for the high-speed rendering of complex models.
-2. Stable Diffusion Configuration 🖥️
-Stable Diffusion will be configured to serve as the backbone of our image generation process. This setup will involve fine-tuning parameters to suit our specific needs for fashion imagery, ensuring the output is of the highest quality. The model will be calibrated to produce images with a focus on realism, maintaining consistency across different styles and clothing articles.
-3. Base Model Creation 🎨
-A photorealistic base model will act as the canvas for our fashion displays. This model will be sourced (from sites like, civitai.com) or crafted to represent a diverse set of body types and ethnicities, ensuring inclusivity. The versatility of this base model is key, as it allows for a wide range of clothing and accessories to be digitally fitted with precision and realism.
-4. Image Detailing via Negative Prompting 🔍
-Negative prompting will be used to address common issues in AI-generated images, such as the accurate rendering of hands and fingers. By using this technique, we can direct the Stable Diffusion model away from undesirable outcomes, refining the generated images to better match the quality of traditional photography.
-5. LoRA Model Personalization 🧬
-The LoRA models will be trained to incorporate specific "hero/fashion model" features, such as faces and expressions, from the fashion models in our Face library, tailored for the Flipkart marketplace. This approach will allow us to present a consistent brand image across various scenarios, resonating with the target audience and enhancing customer connection with the products.
-6. Pose Estimation Integration 🤸
-By integrating pose estimation, we can capture the natural dynamics of human poses (depicted in the input image) and translate them into our AI-generated images.
-7**. Segmentation Techniques for Dress Masking 📐**
-Advanced segmentation techniques, like DeepLab or Mask R-CNN, will be applied for auto-segmentation of the dress.
-The segmented dress images will be utilized for precise input to Control Net, ensuring accurate depiction of clothing, and also to convey which part will not change across multiple generations.
-8**. Control Net Precision 🎛️**
-Control Net will receive detailed pose information to precisely guide the Stable Diffusion process. This will ensure that the generated images not only have the correct clothing and style but also the intended posture and attitude, vital for the authentic portrayal of fashion items.
-9**. Face Library Expansion 🌐**
-Our diverse face library will cater to a global audience, ensuring representation across different ethnicities, ages, and expressions. This repository will serve as a resource for face-swapping, allowing for customization and diversity in our model imagery, thus appealing to a broader customer base.
-10**. Prompt Crafting for Perfection ✍️**
-We will craft detailed and descriptive prompts for the AI to generate images that align with current fashion trends and brand aesthetics. These prompts will guide the AI to consider context, setting, and style nuances, ensuring that the output aligns with Flipkart's branding and customer expectations.
-11. Final Image & Video Production 🖼️
-The production of final images will be the culmination of our process, ready for integration into Flipkart's marketplace. These images will undergo a quality check to ensure they meet our standards for clarity, detail, and realism, providing a seamless visual experience for customers.
-Motion Simulation and Fabric Dynamics:
-Animation Technologies: Utilize technologies like Stable Video Diffusion or Reference Net to animate the fashion models, simulating realistic movements.
-Fabric Movement Simulation: Incorporate fabric dynamics to depict how different materials move and behave on the avatar.
-12. Quality Assurance 🛡️
-A thorough QA process will ensure that each image reflects the high standard of our brand promise. We will check for visual consistency, accuracy, and any anomalies, ensuring that the final product is indistinguishable from a traditional photoshoot.
-13. User Feedback Loop 🔁
-To ensure our solution remains cutting-edge, we will establish a feedback loop, capturing insights from both users and sellers. This data will inform continuous improvements, keeping our imagery at the forefront of e-commerce trends.
-14. Deployment and Performance Monitoring 📊
-Upon deployment, we will closely monitor the performance of our AI-generated images, analyzing customer engagement and conversion rates. This data will drive further optimization, ensuring the imagery remains effective and competitive.
-Seller Interaction Flow
-1. Interface Access and Image Upload 🖥️ 📷
-Sellers access a user-friendly interface for uploading images of dresses on mannequins or models.
-Implement efficient image upload features on Flipkart’s seller portal for a smooth experience.
-2. Automated Pose Analysis and Dress Masking 🤖 👗
-Utilize pose estimation and image segmentation techniques to automatically analyze the pose and mask the dress.
-Ensure accurate separation of the dress from the rest of the image for precise image generation.
-3. Masked Image Review 🔍 📸
-Sellers review the masked image and confirm to proceed with face selection.
-Provide an intuitive interface for easy review and hassle-free progression to the next step.
-4. Model Face Selection 👤 🎨
-Offer sellers a gallery of diverse faces from the AI-generated face library to choose from.
-Enable selection of multiple faces to allow varied image outputs, catering to different customer preferences.
-5. Image & Video Generation with Selected Faces 🖌️ 👥
-Generate images with the chosen faces, maintaining the original pose of the dress.
-Utilize Stable Diffusion to ensure seamless face swapping and realistic image synthesis, enhancing the visual appeal.
-Generate short videos with simulated movements of the fashion model wearing the dress, to visualise movement of dress fabric.
-6. Final Approval and Catalog Integration ✅ 🛒
-Present the final images to sellers for their approval before they are added to the product listings.
-Facilitate easy and efficient integration of AI-enhanced images into Flipkart’s catalog, streamlining the listing process.
-🚀 Next Steps
-We can initiate the project with a pilot phase to demonstrate the effectiveness of our approach and refine our processes based on real experimentation data.
+
+At its core, every off-chain interaction between a Verifier and a user’s
+Wallet follows this workflow:
+
+-   A web application designs a request for the users. This is delivered
+    to the user within a QR code (or via deep-linking; it is up to the
+    implementer). This can either be a auth request or a query-based
+    request.
+-   The user scans the QR code using his/her mobile ID wallet and parses
+    the request.
+-   The user fetches the revocation status of the requested credential
+    from the Issuer of that credential.
+-   The user generates a ZK proof on mobile according to the request of
+    the website starting from the credentials held in his/her wallet.
+    This also contains the ZK proof that the credential is not revoked.
+-   The user sends the ZK proof to the Verifier.
+-   The Verifier verifies the ZK proof using the verification API.
+-   The Verifier checks that the State of the Issuer of the credential
+    and the State of the user are still valid and have not been revoked
+    (this is still performed using the same verification API).
+-   If the verification is successful, the Verifier grants access to the
+    user (or activates any customized logic).
+
+Assume that the request is: “Are you over 18 years old?”. The Verifier
+never gets access to any of the user’s credentials. Instead, the
+Verifier receives a cryptographic proof which, on verification, provides
+an answer “yes” or “no” to the previous question.
+
+This section provides all the elements needed to integrate off-chain
+verification with Polygon ID.
+
+Libraries
+
+The authentication flow can be implemented either in GoLang or
+Javascript
+
+-   Go Iden3 Verification Library
+
+-   JS Iden3 Verification Library
+-e 
+
+---
+
+
+import Tabs from ‘@theme/Tabs’; import TabItem from ‘@theme/TabItem’;
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+The Atomic Query Signature V2 Circuit and Atomic Query MTP V2 Circuit
+circuits have been designed as generic circuits to do the ZK
+verification based on users’ claims.
+
+The Query Language sits on top of these circuits to provide a simple way
+for developers to design customized authentication requirements for
+someone’s credentials. As long as the user holds a credential of a
+specific type, the Verifier can design a query based on 6 operators, for
+example:
+
+-   Must be a verified human to vote for a DAO specific proposal -
+    equals (operator 1).
+-   Must have been born before 2000-01-01 to access a specific website -
+    less-than (operator 2).
+-   Must have a monthly salary greater than $1000 to get a loan -
+    greater-than (operator 3).
+-   Must be an admin or a hacker of a DAO to enter a platform - ìn
+    (operator 4).
+-   Must not be a resident of a country in the list of blacklisted
+    countries to operate on an exchange - not-in (operator 5).
+-   Must not be a resident of a specific country - not-equal (operator
+    6).
+
+The query is designed by the Verifier and presented to the user via a QR
+Code (or deep-linking). Starting from the proof generated by the user as
+a response to the query, the Verifier is easily able to check if the
+query is satisfied or not.
+
+The Query Language follows the same rules whether the verification is
+implemented on-chain or off-chain, while the syntax to define these is a
+bit different. For each of the queries presented above, both the
+on-chain and off-chain way of designing will now be defined.
+
+The entire scripts to set a query are available here: off-chain
+verification, on-chain verification
+
+Equals - Operator 1
+
+Credential Schema
+
+The ProofOfHumanity Schema encodes whether a user has been verified as a
+human or not. Here’s the JSON-LD Context of the Schema Type.
+
+You can create customized schemas, check out this tutorial!
+
+Query
+
+When presented with this query, the user must prove that he/she is a
+Person.
+
+      const proofRequest: protocol.ZKPRequest = {
+          id: 1,
+          circuitId: 'credentialAtomicQuerySigV2',
+          query: {
+            allowedIssuers: ['*'],
+            type: 'ProofOfHumanity',
+            context: 'https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/schemas-examples/proof-of-humanity/proof-of-humanity.jsonld',
+            credentialSubject: {
+            isHuman: {
+              $eq: 1,
+            },
+            },
+          },
+        };
+
+Please, check out our Onchain verification tutorial to build a query to
+learn more how to set zk request for onchain
+
+Corresponding QR Code
+
+
+    {
+        "id": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "typ": "application/iden3comm-plain-json",
+        "type": "https://iden3-communication.io/proofs/1.0/contract-invoke-request",
+        "thid": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "body": {
+            "reason": "airdrop participation",
+            "transaction_data": {
+                "contract address" : "<add your contract address here>", // replace with your contract address
+                "method_id": "b68967e2",
+                "chain_id": 80001,
+                "network": "polygon-mumbai"
+            },
+            "scope": [
+                {
+                    "id": 1,
+                    "circuitId": "credentialAtomicQuerySigV2OnChain",
+                    "query": {
+                        "allowedIssuers": [
+                            "*"
+                        ],
+                        "context": "https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/schemas-examples/proof-of-humanity/proof-of-humanity.jsonld",
+                        "credentialSubject": {
+                            "isHuman": {
+                                "$eq": 1
+                            }
+                        },
+                        "type": "ProofOfHumanity"
+                    }
+                }
+            ]
+        }
+    }
+
+Less-than - Operator 2
+
+Credential Schema
+
+The KYCAgeCredential Schema encodes the date of birth of the credential
+subject. Here’s the JSON-LD Context of the Schema Type.
+
+Query
+
+When presented with this query, the user must prove that he/she has been
+born before 2001/01/01.
+
+      const proofRequest: protocol.ZKPRequest = {
+          id: 1,
+          circuitId: 'credentialAtomicQuerySigV2',
+          query: {
+            allowedIssuers: ['*'],
+            type: 'KYCAgeCredential',
+            context: 'https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v4.jsonld',
+            credentialSubject: {
+            birthday: {
+              $lt: 20010101,
+            },
+            },
+          },
+        };
+
+Please, check out our Onchain verification tutorial to build a query to
+learn more how to set zk request for onchain
+
+Corresponding QR Code
+
+    {
+        "id": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "typ": "application/iden3comm-plain-json",
+        "type": "https://iden3-communication.io/proofs/1.0/contract-invoke-request",
+        "thid": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "body": {
+            "reason": "airdrop participation",
+            "transaction_data": {
+                "contract address" : "<add your contract address here>",
+                "method_id": "b68967e2",
+                "chain_id": 80001,
+                "network": "polygon-mumbai"
+            },
+            "scope": [
+                {
+                    "id": 1,
+                    "circuitId": "credentialAtomicQuerySigV2OnChain",
+                    "query": {
+                        "allowedIssuers": [
+                            "*"
+                        ],
+                        "context": "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v4.jsonld",
+                        "credentialSubject": {
+                            "birthday": {
+                                "$lt": 20010101
+                            }
+                        },
+                        "type": "KYCAgeCredential"
+                    }
+                }
+            ]
+        }
+    }
+
+Greater-than - Operator 3
+
+Credential Schema
+
+The EmployeeData Schema encodes the monthly salary of the credential
+subject. Here’s the JSON-LD Context of the Schema Type.
+
+Query
+
+When presented with this query, the user must prove that his/her monthly
+salary is greater than $1000.
+
+      const proofRequest: protocol.ZKPRequest = {
+          id: 1,
+          circuitId: 'credentialAtomicQuerySigV2',
+          query: {
+            allowedIssuers: ['*'],
+            type: 'EmployeeData',
+            context: 'https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/schemas-examples/employee-data/employee-data.jsonld',
+            credentialSubject: {
+            monthlySalary: {
+              $gt: 1000,
+            },
+            },
+          },
+        };
+
+Please, check out our Onchain verification tutorial to build a query to
+learn more how to set zk request for onchain
+
+Corresponding QR Code
+
+    {
+        "id": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "typ": "application/iden3comm-plain-json",
+        "type": "https://iden3-communication.io/proofs/1.0/contract-invoke-request",
+        "thid": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "body": {
+            "reason": "airdrop participation",
+            "transaction_data": {
+                "contract address" : "<add your contract address here>",
+                "method_id": "b68967e2",
+                "chain_id": 80001,
+                "network": "polygon-mumbai"
+            },
+            "scope": [
+                {
+                    "id": 1,
+                    "circuitId": "credentialAtomicQuerySigV2OnChain",
+                    "query": {
+                        "allowedIssuers": [
+                            "*"
+                        ],
+                        "context": "https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/schemas-examples/employee-data/employee-data.jsonld",
+                        "credentialSubject": {
+                            "monthlySalary": {
+                                "$gt": 1000
+                            }
+                        },
+                        "type": "EmployeeData"
+                    }
+                }
+            ]
+        }
+    }
+
+In - Operator 4
+
+Credential Schema
+
+The ProofOfDaoRole Schema encodes the role of someone inside a DAO. Each
+role is identified by a code as described in the Schema Vocab.
+
+Here’s the JSON-LD Context of the Schema Type.
+
+Query
+
+When presented with this query, the user must prove that he/she is
+either an Admin or a Hacker of a DAO (which corresponds to values 4 and
+5).
+
+      const proofRequest: protocol.ZKPRequest = {
+          id: 1,
+          circuitId: 'credentialAtomicQuerySigV2',
+          query: {
+            allowedIssuers: ['*'],
+            type: 'ProofOfDaoRole',
+            context: 'https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/schemas-examples/proof-of-dao-role/proof-of-dao-role.jsonld',
+            credentialSubject: {
+            role: {
+              $in: [4, 5],
+            },
+            },
+          },
+        };
+
+Please, check out our Onchain verification tutorial to build a query to
+learn more how to set zk request for onchain
+
+Corresponding QR Code
+
+    {
+        "id": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "typ": "application/iden3comm-plain-json",
+        "type": "https://iden3-communication.io/proofs/1.0/contract-invoke-request",
+        "thid": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "body": {
+            "reason": "airdrop participation",
+            "transaction_data": {
+                "contract address" : "<add your contract address here>",
+                "method_id": "b68967e2",
+                "chain_id": 80001,
+                "network": "polygon-mumbai"
+            },
+            "scope": [
+                {
+                    "id": 1,
+                    "circuitId": "credentialAtomicQuerySigV2OnChain",
+                    "query": {
+                        "allowedIssuers": [
+                            "*"
+                        ],
+                        "context": "https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/schemas-examples/proof-of-dao-role/proof-of-dao-role.jsonld",
+                        "credentialSubject": {
+                            "role": {
+                                "$in": [4, 5]
+                            }
+                        },
+                        "type": "ProofOfDaoRole"
+                    }
+                }
+            ]
+        }
+    }
+
+Not-in - Operator 5
+
+Credential Schema
+
+The KYCCountryOfResidenceCredential Schema encodes the countryCode of
+residence of the credential subject according to the ISO Standard.
+Here’s the JSON-LD Context of the Schema Type.
+
+Query
+
+When presented with this query, the user must prove that he/she is not a
+resident of the countries 840, 120, 340, 509 identified by the ISO
+Standard.
+
+      const proofRequest: protocol.ZKPRequest = {
+          id: 1,
+          circuitId: 'credentialAtomicQuerySigV2',
+          query: {
+            allowedIssuers: ['*'],
+            type: 'KYCCountryOfResidenceCredential',
+            context: 'https://github.com/iden3/claim-schema-vocab/blob/main/schemas/json-ld/kyc-v4.jsonld',
+            credentialSubject: {
+            countryCode: {
+              $nin: [840, 120, 340, 509],
+            },
+            },
+          },
+        };
+
+Please, check out our Onchain verification tutorial to build a query to
+learn more how to set zk request for onchain
+
+Corresponding QR Code
+
+    {
+        "id": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "typ": "application/iden3comm-plain-json",
+        "type": "https://iden3-communication.io/proofs/1.0/contract-invoke-request",
+        "thid": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "body": {
+            "reason": "airdrop participation",
+            "transaction_data": {
+                "contract address" : "<add your contract address here>",
+                "method_id": "b68967e2",
+                "chain_id": 80001,
+                "network": "polygon-mumbai"
+            },
+            "scope": [
+                {
+                    "id": 1,
+                    "circuitId": "credentialAtomicQuerySigV2OnChain",
+                    "query": {
+                        "allowedIssuers": [
+                            "*"
+                        ],
+                        "context": "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v4.jsonld",
+                        "credentialSubject": {
+                            "countryCode": {
+                                "$nin": [840, 120, 340, 509]
+                            }
+                        },
+                        "type": "KYCCountryOfResidenceCredential"
+                    }
+                }
+            ]
+        }
+    }
+
+Not-equal - Operator 6
+
+Credential Schema
+
+The KYCCountryOfResidenceCredential Schema encodes the countryCode of
+residence of the credential subject according to the ISO Standard.
+Here’s the JSON-LD Context of the Schema Type.
+
+Query
+
+When presented with this query, the user must prove that he/she is not a
+resident of the country 840 identified by the ISO Standard.
+
+      const proofRequest: protocol.ZKPRequest = {
+          id: 1,
+          circuitId: 'credentialAtomicQuerySigV2',
+          query: {
+            allowedIssuers: ['*'],
+            type: 'KYCCountryOfResidenceCredential',
+            context: 'https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v4.jsonld',
+            credentialSubject: {
+            countryCode: {
+              $ne: 840
+            },
+            },
+          },
+        };
+
+Please, check out our Onchain verification tutorial to build a query to
+learn more how to set zk request for onchain
+
+Corresponding QR Code
+
+    {
+        "id": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "typ": "application/iden3comm-plain-json",
+        "type": "https://iden3-communication.io/proofs/1.0/contract-invoke-request",
+        "thid": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "body": {
+            "reason": "airdrop participation",
+            "transaction_data": {
+                "contract address" : "<add your contract address here>",
+                "method_id": "b68967e2",
+                "chain_id": 80001,
+                "network": "polygon-mumbai"
+            },
+            "scope": [
+                {
+                    "id": 1,
+                    "circuitId": "credentialAtomicQuerySigV2OnChain",
+                    "query": {
+                        "allowedIssuers": [
+                            "*"
+                        ],
+                        "context": "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v4.jsonld",
+                        "credentialSubject": {
+                            "countryCode": {
+                                "$ne": 840
+                            }
+                        },
+                        "type": "KYCCountryOfResidenceCredential"
+                    }
+                }
+            ]
+        }
+    }
+
+Selective Disclosure
+
+Selective Disclosure is a feature that enables requests for specific
+data from the ID Holder. Using a similar approach to the ZK language
+equal operation, the Verifier sends a verification request for a piece
+of the Holder’s identity. As seen below, the way to make this request is
+by sending an empty object as a value.
+
+Query
+
+In the example below, the verifier requests the Holder’s country code.
+
+ts "Off-chain" const proofRequest: protocol.ZKPRequest = {     id: 1,     circuitId: 'credentialAtomicQuerySigV2',     query: {         allowedIssuers: ['*'],         type: 'KYCCountryOfResidenceCredential',         context: 'https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v4.jsonld',         credentialSubject: {             countryCode: {},         },     }, };
+:::warning “Allowed Issuers”
+
+When we use * in the “allowed issuers” segment (allowedIssuers: ['*']),
+we mean that we accept any entity that might have provided the
+credential. Even though this seems to be convenient for testing
+purposes, it may also be considered risky. Applying due diligence by
+actually choosing trusted specific issuers should be the best approach.
+Only in rare cases, a verifier would accept any issuer, so we advise not
+to use *.
+
+:::
+-e 
+
+---
+
+
+import Tabs from ‘@theme/Tabs’; import TabItem from ‘@theme/TabItem’;
+
+After having presented a Request to the user’s wallet, the wallet will
+process the request and generate a proof that is sent back to the
+Verifier. The proof must be verified in order to authenticate the user.
+Let us see how to execute this verification.
+
+  The proof verification always follows the same flow independently of
+  the Request type presented in the previous step by the Verifier,
+  whether it is a basic auth or a query-based request.
+
+Unpack the proof
+
+    import (
+        "io"
+    )
+
+    tokenBytes, err := io.ReadAll(req.Body)
+
+    const getRawBody = require('raw-body')
+
+    const raw = await getRawBody(req);
+    const tokenStr = raw.toString().trim();
+
+req is the post request sent by the wallet in response to the Auth
+Request posed by the Verifier. This unpacks the proof sent by the
+wallet.
+
+Initiate the verifier
+
+    var verificationKeyloader = &loaders.FSKeyLoader{Dir: keyDIR}
+    resolver := state.ETHResolver{
+        RPCUrl:          ethURL,
+        ContractAddress: common.HexToAddress(contractAddress),
+    }
+
+    resolvers := map[string]pubsignals.StateResolver{
+        resolverPrefix: resolver,
+    }
+
+    verifier, err := auth.NewVerifier(
+                verificationKeyloader, resolvers, auth.WithIPFSGateway("<gateway url>"))
+
+    const ethStateResolver = new resolver.EthStateResolver(
+        ethURL,
+        contractAddress,
+    );
+
+    const resolvers: resolver.Resolvers = {
+        ['polygon:mumbai']: ethStateResolver,
+    };
+
+    const verifier = await Verifier.newVerifier(
+        {
+        stateResolver: resolvers,
+        circuitsDir: path.join(__dirname, './circuits-dir'),
+        ipfsGatewayURL:"<gateway url>"
+        }
+    );
+
+This creates a resolver which is used to fetch the identity state from
+the State Smart Contract and a verification key loader which is used to
+fetch the verification keys necessary to verify a zero-knowledge proof.
+Eventually, it returns an instance of a Verifier. To set up a verifier,
+different parameters need to be passed:
+
+-   circuitsDir is the path where the public verification keys for Iden3
+    circuits are located (such as "./circuits"). If no folder is set,
+    ‘./circuits’ folder is used. The verification key folder can be
+    found here. Path to the circuit file is constructed from
+    ${circuitsDir}/${circuitId}/verification_key.json,
+-   hierarchical structure for files in circuits folder is mandatory,
+    e.g. –circuits —–circuitId ———file
+-   ethURL is the URL of your RPC node provider such as
+    "https://polygon-testnet-rpc.allthatnode.com:8545" for Polygon
+    Mumbai.
+-   contractAddress is the address of the identity state Smart Contract.
+    On Polygon Mumbai, it is 0x134B1BE34911E39A8397ec6289782989729807a4.
+-   resolverPrefix is the prefix of the resolver. For Polygon Mumbai it
+    is "polygon:mumbai".
+-   ipfsGatewayURL can be your IPFS gateway or public one. You can path
+    your loader or IPFS node also.
+
+Execute the verification
+
+    authResponse, err := verifier.FullVerify(
+        r.Context(),
+        string(tokenBytes),
+        authRequest.(protocol.AuthorizationRequestMessage),
+        pubsignals.WithAcceptedStateTransitionDelay(time.Minute*5))
+
+    let authResponse: protocol.AuthorizationResponseMessage;
+
+    const opts: VerifyOpts = {
+        AcceptedStateTransitionDelay: 5 * 60 * 1000, // 5 minute
+      };
+         
+    authResponse = await verifier.fullVerify(tokenStr, authRequest, opts);
+
+Execute the verification. It verifies that the proof shared by the user
+satisfies the criteria set by the Verifier inside the initial request.
+
+tokenBytes contains the proof generated by the user’s wallet.
+
+authRequest is the request previously presented to that specific user.
+
+AcceptedStateTransitionDelay(time.Minute*5)) is the delay accepted by
+the Verifier. By setting it to 5 minutes, as in this case, the Verifier
+accepts a proof that verifies the validity of a credential against a
+state, as stated in the Smart Contract, which is up to 5 minutes old.
+
+An example of the usage of this API can be found here (GO) and here (JS)
+
+Verification - Under the Hood
+
+The auth library provides a simple handler to extract all the necessary
+metadata from the proof and execute all the verifications needed. The
+verification procedure that is happening behind the scenes involves the
+following steps:
+
+Zero-Knowledge Proof Verification
+
+Starting from the circuit-specific public verification key, the proof,
+and the public inputs provided by the user, it is possible to verify the
+proof. In this case, the proof verification involves:
+
+-   Verification of the proof contained based on the AuthV2 Circuit
+-   Verification of the proof contained based on the AtomicQuerySigV2
+    Circuit or AtomicQueryMTPV2 based on the query.
+
+Verification of On-chain Identity States
+
+Starting from the DID of the user, the State is fetched from the
+blockchain and compared to the state provided as input to the proof;
+this is done to check whether the user is the actual “owner” of the
+state used to generate the proof or not. It is important to note here
+that there is no gas cost associated with the verification as the
+VerifyState method. It just reads the identity state of the user
+on-chain without making any operations/smart contract calls. The same
+verification is performed for the Issuer’s Identity State.
+
+In this part, it is also verified that the requested credential has not
+been revoked by the Issuer.
+
+Verification of Circuit Public Inputs
+
+This involves a verification based on the public inputs of the circuits
+used to generate the proof. These must match the rules requested by the
+Verifier inside the Auth Request. For example, the query and the
+credential schema used by the user to generate the proof must match the
+Auth Request:
+
+-   The message signed by the user must match the one passed to the user
+    inside the auth request.
+-   The rules such as the query or the credential schema used to
+    generate the proof must match the ones included inside the auth
+    request.
+
+This “off-circuit” verification is important because a user can
+potentially modify the query and present a valid proof. A user born
+after 2000-12-31 shouldn’t pass the check. However, if they generate a
+proof using a query input "$lt": 20010101, the Verifier would see it as
+a valid proof. By doing verification of the public inputs of the
+circuit, the Verifier is able to detect malicious actors.
+
+At the end of the workflow:
+
+-   The web client is able to authenticate the user using its DID ID
+    after having established that the user controls that identity and
+    satisfies the query presented in the auth request.
+-   The user is able to log into the platform without disclosing any
+    personal information to the client except for its DID.
+-e 
+
+---
+
+
+import Tabs from ‘@theme/Tabs’; import TabItem from ‘@theme/TabItem’;
+
+Configuration
+
+The set of APIs included in the verification library is comprised of two
+steps:
+
+-   Request APIs allow designing the request to be presented to the user
+    in order to authenticate.
+-   Verification APIs allow verifying the proof sent by the user. The
+    proof is generated as a response to the request.
+
+Check the workflow to disambiguate between these two processes.
+
+Both the APIs are available either in Golang or Javascript:
+
+    go get github.com/iden3/go-iden3-auth/v2
+
+    import (
+        "github.com/iden3/go-circuits/v2"
+        auth "github.com/iden3/go-iden3-auth/v2"
+        "github.com/iden3/go-iden3-auth/v2/loaders"
+        "github.com/iden3/go-iden3-auth/v2/pubsignals"
+        "github.com/iden3/go-iden3-auth/v2/state"
+        "github.com/iden3/iden3comm/v2/protocol"
+    )
+
+    npm i @iden3/js-iden3-auth --save
+
+    const {auth, resolver, protocol} = require('@iden3/js-iden3-auth')
+-e 
+
+---
+
+
+import Tabs from ‘@theme/Tabs’; import TabItem from ‘@theme/TabItem’;
+
+The first step of interacting with a wallet involves presenting a
+request. In this tutorial, we will explain the difference between two
+types of requests: Basic Auth Request and Query-based Request.
+
+A Basic Auth Request allows designing a minimal DID request to the user.
+As a response to that, the user will share a proof that he/she is the
+owner of that DID.
+
+A Query-based Request allows to design a more complex query request to
+the user. As a response to that, the user will share a proof that he/she
+owns a credential that satisfies the properties defined inside the
+query.
+
+Basic Auth Request
+
+The Basic Auth Request allows verifiers to interact with a wallet and
+authenticate the user by its DID.
+A Basic Auth Request can be implemented by any platform that is
+interested in providing a seamless web2-like login experience to its
+users without setting any specific requirements.
+
+CreateAuthorizationRequest
+
+Generate an Auth Request to the user that includes a reason for
+authenticating. The audience represents the DID of the requester, while
+the url is the callback URL where the user must send the response for
+verification.
+
+    var request protocol.AuthorizationRequestMessage
+    request = auth.CreateAuthorizationRequest(reason, audience, url)
+
+    const request : protocol.AuthorizationRequestMessage = auth.createAuthorizationRequest(reason, audience, url)
+
+An example of the usage of this API can be found here(GO) and here(JS).
+
+CreateAuthorizationRequestWithMessage
+
+The same functionality of CreateAuthorizationRequest but it also
+includes a messageToSign. This message will be shown to the users inside
+their wallets and will be signed as part of the response.
+
+    var request protocol.AuthorizationRequestMessage
+    request = auth.CreateAuthorizationRequestWithMessage(reason, messageToSign, audience, url)
+
+    const request : protocol.AuthorizationRequestMessage = auth.createAuthorizationRequestWithMessage(reason, messageToSign,audience, url)
+
+Query-based Request
+
+The Query-based Auth Request allows verifiers to interact with a wallet
+by setting up specific requirements for authentication. These
+requirements are the conditions that the user has to satisfy based on
+the credentials held in his/her wallet.
+
+The Query has to be attached to the Basic Auth Request output of the
+previous API. An example of its usage can be found here.
+
+Generate a request to prove that the user owns a credential that
+satisfies certain requirements.
+
+    var mtpProofRequest protocol.ZeroKnowledgeProofRequest
+    mtpProofRequest.ID = 1
+    mtpProofRequest.CircuitID = string(circuits.AtomicQuerySigV2CircuitID)
+    mtpProofRequest.Query = map[string]interface{}{
+        "allowedIssuers": []string{"*"},
+        "credentialSubject": map[string]interface{}{
+            "birthday": map[string]interface{}{
+                "$lt": 20000101,
+            },
+        },
+        "context": "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld",
+        "type":    "KYCAgeCredential",
+    }
+    request.Body.Scope = append(request.Body.Scope, mtpProofRequest)
+
+    const proofRequest: protocol.ZKPRequest = {
+                id: 1,
+                circuitId: 'credentialAtomicQuerySigV2',
+                query: {
+                  allowedIssuers: ['*'],
+                  type: 'KYCAgeCredential',
+                  context: 'https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld',
+                  credentialSubject: {
+                    birthday: {
+                      $lt: 20000101,
+                    },
+                  },
+              },
+            };
+    request.body.scope = [...scope, proofRequest];
+
+ID represents the request ID: ideally, in production, it should be a
+unique value for each request.
+
+CircuitID represents the identifier of the circuit that the user must
+use to generate the requested proof. Here you can find a reference to
+the available circuits.
+
+In this case, the user has to provide a proof that he/she owns a
+credential issued by the allowedIssuer of schema type KYCAgeCredential
+described in the URL provided in context. This is the JSON-LD context of
+the credential. By setting the allowedIssuer to *, the user can provide
+a proof of that credential issued by any issuer. Alternatively, if the
+verifier adds the DID of a specific issuer inside the allowedIssuer
+array, the user must provide a proof of a credential issued by that
+specific issuer.
+
+:::warning “Allowed Issuers”
+
+As stated above, when we use * in the “allowed issuers” segment
+(allowedIssuers: ['*']), we mean that we accept any entity that might
+have provided the credential. Even though this seems to be convenient
+for testing purposes, it may also be considered risky. Applying due
+diligence by actually choosing trusted specific issuers should be the
+best approach. Only in rare cases, a verifier would accept any issuer,
+so we advise not to use *.
+
+:::
+
+This credential contains details of the birthday of the receiver in its
+credentialSubject. In this scenario, the user has to prove that the
+value contained in the attribute birthday is less than (lt) 20000101,
+meaning that the user was born before 01/01/2000.
+
+An additional optional field that can be included in the query is
+skipClaimRevocationCheck. By setting it to true, the user doesn’t need
+to provide the proof of the revocation of the credential, which would
+otherwise be provided by default. This is useful for credentials that
+are still useful even if they have been revoked. For example, a
+credential that states that a user is an employee of Google, is still
+useful even if it has been revoked after the user left the company and
+the credential was revoked.
+
+    mtpProofRequest.Query = map[string]interface{}{
+    ...
+    "skipClaimRevocationCheck": true,
+    ...
+    }
+
+An example of the usage of this API can be found here (GO) and here
+(JS).
+
+Check out our Query Language guide to design any type of query request
+you can think of!
+
+Check out the Iden3Comm section inside the Wallet SDK to learn more
+about how these requests are interpreted by the wallet in order to
+generate a zk proof.
+-e 
+
+---
+
+
+import Tabs from ‘@theme/Tabs’; import TabItem from ‘@theme/TabItem’;
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+Any application that wants to authenticate users based on their Polygon
+ID Identity off-chain must set up a Verifier. A Verifier is made of a
+Server and a Client.
+
+The Server generates the ZK Request according to the requirements of the
+platform. There are two types of authentication:
+
+-   Basic Auth: for example, a platform that issues Credentials must
+    authenticate users by their identifiers before sharing Credentials
+    with them.
+-   Query-based Auth: for example, a platform that gives access only to
+    those users that are over 18 years of age.
+
+The second role of the Server is to execute Verification of the proof
+sent by the Identity Wallet.
+
+The Verifier Client is the point of interaction with the user. In its
+simplest form, a client needs to embed a QR code that displays the ZK
+request generated by the Server. The verification request can also be
+delivered to users via Deep Linking. After scanning the ZK request, the
+user will generate a proof based on that request locally on their
+wallet. This proof is therefore sent back to the Verifier Server that
+verifies whether the proof is valid.
+
+This tutorial is based on the verification of a Credential of Type
+KYCAgeCredential with an attribute birthday based on the following
+Schema URL:
+https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld.
+
+The prerequisite is that users have the Polygon ID Wallet app installed
+and self-issued a Credential of type KYC Age Credential Merklized using
+our Demo Issuer. Further credentials can be issued using the Issuer
+Node.
+
+In this example, the verifier will set up the query: “Prove that you
+were born before 2000/01/01. To set up a different query check out the
+ZK Query Language section.
+
+The executable code for this section can be found here.
+
+Verifier Server Setup
+
+1.  Add the authorization package to your project
+
+    go get github.com/iden3/go-iden3-auth/v2
+
+    npm i @iden3/js-iden3-auth
+
+2.  Set up a server
+
+Initiate a server that contains two endpoints:
+
+-   GET /api/sign-in: Returns auth request.
+-   POST /api/callback: Receives the callback request from the identity
+    wallet containing the proof and verifies it.
+
+    package main
+
+    import(
+        "encoding/json"
+        "fmt"
+        "io"
+        "log"
+        "net/http"
+        "strconv"
+        "time"
+        "github.com/ethereum/go-ethereum/common"
+        "github.com/iden3/go-circuits/v2"
+        auth "github.com/iden3/go-iden3-auth/v2"
+        "github.com/iden3/go-iden3-auth/v2/loaders"
+        "github.com/iden3/go-iden3-auth/v2/pubsignals"
+        "github.com/iden3/go-iden3-auth/v2/state"
+        "github.com/iden3/iden3comm/v2/protocol"
+    )
+
+    func main() {
+        http.HandleFunc("/api/sign-in", GetAuthRequest)
+        http.HandleFunc("/api/callback", Callback)
+        http.ListenAndServe(":8080", nil)
+    }
+
+    // Create a map to store the auth requests and their session IDs
+    var requestMap = make(map[string]interface{})
+
+    const express = require('express');
+    const {auth, resolver, protocol} = require('@iden3/js-iden3-auth')
+    const getRawBody = require('raw-body')
+
+    const app = express();
+    const port = 8080;
+
+    app.get("/api/sign-in", (req, res) => {
+        console.log('get Auth Request');
+        GetAuthRequest(req,res);
+    });
+
+    app.post("/api/callback", (req, res) => {
+        console.log('callback');
+        Callback(req,res);
+    });
+
+    app.listen(port, () => {
+        console.log('server running on port 8080');
+    });
+
+    // Create a map to store the auth requests and their session IDs
+    const requestMap = new Map();
+
+3.  Sign-in endpoint
+
+This endpoint generates the auth request for the user. Using this
+endpoint, the developers set up the requirements that users must meet in
+order to authenticate.
+
+  If created using Polygon ID Platform, the schema URL can be fetched
+  from there and pasted inside your Query.
+
+```go {11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+27, 28, 29, 30, 31}
+
+func GetAuthRequest(w http.ResponseWriter, r *http.Request) {
+
+// Audience is verifier id rURL := “NGROK URL” sessionID := 1
+CallbackURL := “/api/callback” Audience :=
+“did:polygonid:polygon:mumbai:2qDyy1kEo2AYcP3RT4XGea7BtxsY285szg6yP9SPrs”
+
+uri := fmt.Sprintf(“%s%s?sessionId=%s”, rURL, CallbackURL,
+strconv.Itoa(sessionID))
+
+// Generate request for basic authentication var request
+protocol.AuthorizationRequestMessage =
+auth.CreateAuthorizationRequest(“test flow”, Audience, uri)
+
+request.ID = “7f38a193-0918-4a48-9fac-36adfdb8b542” request.ThreadID =
+“7f38a193-0918-4a48-9fac-36adfdb8b542”
+
+// Add request for a specific proof var mtpProofRequest
+protocol.ZeroKnowledgeProofRequest mtpProofRequest.ID = 1
+mtpProofRequest.CircuitID = string(circuits.AtomicQuerySigV2CircuitID)
+mtpProofRequest.Query = map[string]interface{}{ “allowedIssuers”:
+[]string{“*“},”credentialSubject”: map[string]interface{}{ “birthday”:
+map[string]interface{}{ “$lt”: 20000101, }, }, “context”:
+“https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld”,
+“type”: “KYCAgeCredential”, } request.Body.Scope =
+append(request.Body.Scope, mtpProofRequest)
+
+// Store auth request in map associated with session ID
+requestMap[strconv.Itoa(sessionID)] = request
+
+// print request fmt.Println(request)
+
+msgBytes, _ := json.Marshal(request)
+
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusOK)
+    w.Write(msgBytes)
+    return
+
+}
+
+
+    </TabItem>
+    <TabItem value="Javascript">    
+
+    ```js {11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37}
+    async function GetAuthRequest(req,res) {
+
+        // Audience is verifier id
+        const hostUrl = "<NGROK_URL>";
+        const sessionId = 1;
+        const callbackURL = "/api/callback"
+        const audience = "did:polygonid:polygon:mumbai:2qDyy1kEo2AYcP3RT4XGea7BtxsY285szg6yP9SPrs"
+
+        const uri = `${hostUrl}${callbackURL}?sessionId=${sessionId}`;
+
+        // Generate request for basic authentication
+        const request = auth.createAuthorizationRequest(
+            'test flow',
+            audience,
+            uri,
+        );
+                
+        request.id = '7f38a193-0918-4a48-9fac-36adfdb8b542';
+        request.thid = '7f38a193-0918-4a48-9fac-36adfdb8b542';
+
+        // Add request for a specific proof
+        const proofRequest = {
+            id: 1,
+            circuitId: 'credentialAtomicQuerySigV2',
+            query: {
+              allowedIssuers: ['*'],
+              type: 'KYCAgeCredential',
+              context: 'https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld',
+              credentialSubject: {
+                birthday: {
+                  $lt: 20000101,
+                },
+              },
+          },
+          };
+        const scope = request.body.scope ?? [];
+        request.body.scope = [...scope, proofRequest];
+                 
+        // Store auth request in map associated with session ID
+        requestMap.set(`${sessionId}`, request);
+
+            return res.status(200).set('Content-Type', 'application/json').send(request);
+    }
+
+:::warning “Allowed Issuers”
+
+When we use * in the “allowed issuers” segment (allowedIssuers: ['*']),
+we mean that we accept any entity that might have provided the
+credential. Even though this seems to be convenient for testing
+purposes, it may also be considered risky. Applying due diligence by
+actually choosing trusted specific issuers should be the best approach.
+Only in rare cases, a verifier would accept any issuer, so we advise not
+to use *.
+
+:::
+
+The highlighted lines are to be added only if the authentication needs
+to design a query for a specific proof as in the case of Query-based
+Auth. When not included, it will perform a Basic Auth.
+
+4.  Callback Endpoint
+
+The request generated in the previous endpoint already contains the
+CallBackURL so that the response generated by the wallet will be
+automatically forwarded to the server callback function. The callback
+post endpoint receives the proof generated by the identity wallet. The
+role of the callback endpoint is to execute the Verification on the
+proof.
+
+:::info “Testnet / Mainnet”
+
+The code samples on this page are using Polygon’s Testnet Mumbai,
+including the smart contract address and the RPC endpoint in the ethURL
+variable. If you want to use the Mainnet, you need to add a resolver for
+it.
+
+Mainnet contract address: 0x624ce98D2d27b20b8f8d521723Df8fC4db71D79D
+
+DID prefix: polygon:main
+
+    const RPC_URL = '<RPC_URL>';
+    const mainContractAddress = "0x624ce98D2d27b20b8f8d521723Df8fC4db71D79D"
+
+    const mainStateResolver = new resolver.EthStateResolver(
+        RPC_URL,
+        mainContractAddress,
+    );
+
+    const resolvers = {
+        ['polygon:mumbai']: ethStateResolver,
+        ['polygon:main']: mainStateResolver,
+    };
+
+A Verifier can work with multiple networks simultaneously. Even users
+and issuers can be on different networks. The verifier library can
+properly resolve the state of the issuer and the user from the different
+networks.
+
+:::
+
+The public verification keys for Iden3 circuits generated after the
+trusted setup can be found here and must be added to your project inside
+a folder called keys.
+
+    // Callback works with sign-in callbacks
+    func Callback(w http.ResponseWriter, r *http.Request) {
+
+        // Get session ID from request
+        sessionID := r.URL.Query().Get("sessionId")
+
+        // get JWZ token params from the post request
+        tokenBytes, _ := io.ReadAll(r.Body)
+
+        // Add Polygon Mumbai RPC node endpoint - needed to read on-chain state
+        ethURL := "https://polygon-testnet-rpc.allthatnode.com:8545"
+
+        // Add IPFS url - needed to load schemas from IPFS 
+        ipfsURL := "https://ipfs.io"
+
+        // Add identity state contract address
+        contractAddress := "0x134B1BE34911E39A8397ec6289782989729807a4"
+
+        resolverPrefix := "polygon:mumbai"
+
+        // Locate the directory that contains circuit's verification keys
+        keyDIR := "../keys"
+
+        // fetch authRequest from sessionID
+        authRequest := requestMap[sessionID]
+
+        // print authRequest
+        fmt.Println(authRequest)
+
+        // load the verifcation key
+        var verificationKeyloader = &loaders.FSKeyLoader{Dir: keyDIR}
+        resolver := state.ETHResolver{
+            RPCUrl:          ethURL,
+            ContractAddress: common.HexToAddress(contractAddress),
+        }
+
+        resolvers := map[string]pubsignals.StateResolver{
+            resolverPrefix: resolver,
+        }
+
+        // EXECUTE VERIFICATION
+        verifier, err := auth.NewVerifier(verificationKeyloader, resolvers, auth.WithIPFSGateway(ipfsURL))
+        if err != nil {
+            log.Println(err.Error())
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+        authResponse, err := verifier.FullVerify(
+            r.Context(),
+            string(tokenBytes),
+            authRequest.(protocol.AuthorizationRequestMessage),
+            pubsignals.WithAcceptedStateTransitionDelay(time.Minute*5))
+        if err != nil {
+            log.Println(err.Error())
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+            return
+        }
+
+        userID := authResponse.From
+
+        messageBytes := []byte("User with ID " + userID + " Successfully authenticated")
+
+        w.WriteHeader(http.StatusOK)
+        w.Header().Set("Content-Type", "application/json")
+        w.Write(messageBytes)
+
+        return
+    }
+
+    async function Callback(req,res) {
+
+        // Get session ID from request
+        const sessionId = req.query.sessionId;
+
+        // get JWZ token params from the post request
+        const raw = await getRawBody(req);
+        const tokenStr = raw.toString().trim();
+
+        const ethURL = '<MUMBAI_RPC_URL>';
+        const contractAddress = "0x134B1BE34911E39A8397ec6289782989729807a4"
+        const keyDIR = "../keys"
+
+        const ethStateResolver = new resolver.EthStateResolver(
+            ethURL,
+            contractAddress,
+          );
+
+        const resolvers = {
+            ['polygon:mumbai']: ethStateResolver,
+        };               
+
+        // fetch authRequest from sessionID
+        const authRequest = requestMap.get(`${sessionId}`);
+                    
+
+        // EXECUTE VERIFICATION
+        const verifier = await auth.Verifier.newVerifier(
+                {
+                stateResolver: resolvers,
+                circuitsDir: path.join(__dirname, './circuits-dir'),
+                ipfsGatewayURL:"<gateway url>"
+                }
+        );
+
+        try {
+            const opts = {
+                AcceptedStateTransitionDelay: 5 * 60 * 1000, // 5 minute
+              };        
+            authResponse = await verifier.fullVerify(tokenStr, authRequest, opts);
+        } catch (error) {
+        return res.status(500).send(error);
+        }
+        return res.status(200).set('Content-Type', 'application/json').send("user with ID: " + authResponse.from + "Succesfully authenticated");
+        }
+
+  If you need to deploy an App or to build a Docker container, you’ll
+  need to bundle the libwasmer.so library together with the app.
+
+Verifier Client Setup
+
+The Verifier Client must fetch the Auth Request generated by the Server
+(/api/sign-in endpoint) and deliver it to the user via a QR Code.
+
+  To display the QR code inside your frontend, you can use this Code
+  Sandbox.
+
+A Verifier can show a QR code that contains one of the following data
+structures:
+
+-   Raw JSON - message will be treated as one of the IDEN3 Protocol
+    messages.
+-   Link with base64 encoded message or shortened request URI (encoded
+    URL) in case base64-encoded message is too large. Possible formats
+    of links are:
+    1.  iden3comm://?i_m={{base64EncodedRequestHere}}
+    2.  iden3comm://?request_uri={{shortenedUrl}}
+
+If both params are present i_m is prioritized and request_uri is
+ignored.
+
+The same request can also be delivered to users via Deep Linking. The
+same format for links must be used.
+
+:::note “Polygon ID wallet”
+
+Polygon ID wallet will support handling of request_uri in the next
+release, while your client can already implement this specification.
+
+:::
+
+Shortened URL algorithm
+
+While it’s not strictly restricted how you can perform URL shortage
+algorithm, it is recommended to follow these instructions:
+
+1.  Generate a UUID for a particular request (or use ID of the message
+    itself)
+2.  Implement an endpoint to fetch messages by UUID.
+3.  Encode URL to fetch messages to the request_uri.
+
+Example of URL shortage logic:
+
+    package handlers
+
+    import (
+        "encoding/json"
+        "fmt"
+        "io"
+        "net/http"
+        "os"
+        "time"
+        "github.com/gofrs/uuid"
+        "github.com/patrickmn/go-cache"
+    )
+
+    var cacheStorage = cache.New(60*time.Minute, 60*time.Minute)    
+
+    func HandleQRData(w http.ResponseWriter, r *http.Request) {
+        switch r.Method {
+
+        // create url for the message
+        case http.MethodPost:
+
+            // get json data from request body
+            var data interface{}
+            body, err := io.ReadAll(r.Body)
+            if err != nil {
+                http.Error(w, "Failed to read request body", http.StatusInternalServerError)
+                return
+            }
+            defer r.Body.Close()
+
+            err = json.Unmarshal(body, &data)
+            if err != nil {
+                http.Error(w, "Failed to unmarshal body data", http.StatusInternalServerError)
+                return
+            }
+
+            // generate random key
+            uv, err := uuid.NewV4()
+
+            if err != nil {
+                http.Error(w, "Failed to generate uuid", http.StatusInternalServerError)
+                return
+            }
+
+            // store data in map
+            cacheStorage.Set(uv.String(), data, 1*time.Hour)
+
+            hostURL := os.Getenv("HOST_URL") // e.g. https://verifier.com
+            // write key to response
+            fmt.Fprintf(w, "%s%s?id=%s", hostURL, "api/qr-store", uv.String())
+            return  
+
+        // get message by identifier    
+        case http.MethodGet:
+
+            // get path param
+            id := r.URL.Query().Get("id")
+            if id == "" {
+                http.Error(w, "Failed to get id", http.StatusNotFound)
+                return
+            }
+            // get data from map
+            data, ok := cacheStorage.Get(id)
+
+            if !ok {
+                http.Error(w, fmt.Sprintf("Failed to retrieve QR data by %s", id), http.StatusNotFound)
+                return
+            }
+
+            jsonData, err := json.Marshal(data)
+            if err != nil {
+                http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
+                return
+            }
+
+            // write data to response
+            w.WriteHeader(http.StatusOK)
+            w.Header().Set("Content-Type", "application/json")
+            w.Write(jsonData)
+            return
+        }
+    }
+
+    const express = require('express');
+    const { v4: uuidv4 } = require('uuid');
+    const Cache = require('cache-manager');
+    const HttpStatus = require('http-status-codes');
+
+    const app = express();
+    app.use(express.json());
+
+    const cPromise = Cache.caching('memory', {
+        max: 100,
+        ttl: 10 * 1000 /*milliseconds*/,
+    });
+    app.get('/api/qr-store', async (req, res) => {
+    const id = req.query.id;
+    const cacheManager = await cPromise;
+    const data = await cacheManager.get(id);
+
+    if (!data) {
+        return res.status(HttpStatus.NOT_FOUND).json({ error: `item not found ${id}` });
+    }
+
+    return res.status(HttpStatus.OK).json(data);
+    });
+
+    app.post('/api/qr-store', async (req, res) => {
+    const body = req.body;
+    const uuid = uuidv4();
+    const cacheManager = await cPromise;
+
+    console.log(cacheManager);
+
+    await cacheManager.set(uuid, body, { ttl: 3600 });
+
+    const hostUrl = process.env.HOST_URL;
+    const qrUrl = `${hostUrl}/api/qr-store?id=${uuid}`;
+
+    return res.status(HttpStatus.OK).json({ qrUrl });
+    });
+
+    app.listen(3000, () => {
+    console.log('Express server is running on port 3000');
+
+    });
+
+Implement Further Logic
+
+This tutorial showcased a minimalistic application that leverages
+Polygon ID libraries for authentication purposes. Developers can
+leverage the broad set of existing Credentials held by users to set up
+any customized Query using our ZK Query Language to unleash the full
+potential of the framework.
+
+For example, the concept can be extended to exchanges that require KYC
+Credentials, DAOs that require proof-of-personhood Credentials, or
+social media applications that intend to re-use users’ aggregated
+reputation.
+
+To do so, add the Static Folder to your Verifier repository. This folder
+contains an HTML static webpage that renders a static webpage with the
+QR code containing the Auth Request.
+
+  To display the QR code inside your frontend, you can use the
+  express.static built-in middleware function together with this Static
+  Folder or this Code Sandbox.
+
+1.  Add routing to your Express Server
+
+To serve static files, we use the express.static built-in middleware
+function.
+
+```js {8} const express = require(‘express’); const {auth, resolver,
+protocol} = require(‘@iden3/js-iden3-auth’) const getRawBody =
+require(‘raw-body’)
+
+const app = express(); const port = 8080;
+
+app.use(express.static(‘static’));
+
+app.get(“/api/sign-in”, (req, res) => { console.log(‘get Auth Request’);
+GetAuthRequest(req,res); });
+
+app.post(“/api/callback”, (req, res) => { console.log(‘callback’);
+Callback(req,res); });
+
+app.listen(port, () => { console.log(‘server running on port 8080’); });
+
+// Create a map to store the auth requests and their session IDs const
+requestMap = new Map(); ```
+
+2.  Visit http://localhost:8080/
+
+When visiting the URL, the users will need to scan the QR code with
+their ID wallets.
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+Demo Verifier
+
+The Demo Verifier is a playground that allows you to create queries
+based on a specific credential, generate a QR code based on that query
+and let the user scan the QR code to generate a zero-knowledge proof
+with which the query should be satisfied.
+
+Prerequisites
+
+Download the Polygon ID Wallet App and create an Identity.
+
+-   For Android: Polygon ID on Google Play
+-   For iOS: Polygon ID on the App Store
+-   Have the queried credential inside your wallet. For the tutorial, we
+    are using the ProofOfDaoLongevity that can be created via the Issuer
+    Node UI testing environment.
+
+Quick Start
+
+1.  On the Demo Verifier website click on the drop-down menu and then
+    Custom
+
+    Click on Sign In.
+
+2.  Create the query via the editor.
+
+    The editor allows you to design the query that the user will have to
+    satisfy. The query is created by selecting the credential type and
+    the attribute that you want to query. More info on how to design a
+    query is described via the ZK Query Language.
+
+    In this example, we are querying the date of entry of the user
+    inside a DAO. In particular, we want to make sure that the user
+    joined the DAO before a specific date. This query is based on the
+    ProofOfDaoLongevity credential type described by this JSON-LD
+    Context.
+
+    Then click Submit.
+
+3.  The query is then converted into a QR code that can be scanned by
+    the user.
+
+    Once scanning the QR code with the Polygon ID app, the user will be
+    prompted to generate a zero-knowledge proof that attests that the
+    query is satisfied without revealing any further information about
+    the credential. For example, the user’s entry date to the DAO is
+    never revealed to the verifier.
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+Verifier
+
+A Verifier is any web2 or web3 platform that wants to authenticate users
+based on their Credentials.
+
+Verifiers can set up queries based on users’ existing Credentials
+collected from a broad set of Issuers. A Query encapsulates the criteria
+that a user must match to authenticate, such as “must be a member of XYZ
+DAO” or “must be over 18 years old”. Polygon ID provides a seamless,
+customized and privacy-based authentication experience to users.
+
+The request of the Verifier is designed using our fully expressive zk
+Query Language and encapsulated into a QR code (or via deep linking) to
+be shown to the user. The user scans the QR code with its Wallet to
+prompt the proof generation.
+
+The verification process doesn’t involve any interaction between the
+Verifier and the Issuer of the requested credential. As part of the
+Query, the Verifier includes the identifiers of the trusted issuers. For
+example, a Verifier should add XYZ DAO as the only trusted Issuer when
+verifying that an individual is a member of XYZ DAO. The XYZ DAO doesn’t
+need to accept nor interact with the Verifier.
+
+At the end of the process, the verifier gets a cryptographic proof that
+the user satisfies the query, while the user shares just the minimum
+possible amount of data required for the interaction.
+
+Verifier SDK
+
+The Verifier SDK is a set of tools that allow any application to verify
+user information based on their credentials. The SDK provides a fully
+customizable and privacy-based authentication experience to users. The
+process of verifying user information based on their credentials can
+happen on-chain via a smart contract or off-chain. Both processes
+involve the same level of user privacy and the same degree of query
+customization. The proof generated on mobile is the same for both cases;
+the only difference is in the verification process. The on-chain
+verification happens programmatically inside a smart contract. The
+off-chain verification happens inside a script that needs to be set up
+by the Verifier application (either on a server or on the client side):
+
+-   Verifier SDK - Off-chain Verification provides all the elements to
+    create a customized Query, set up a verifier and generate a QR code
+    (or deeplink) on the client side to request proof from the user.
+-   Verifier SDK - On-chain Verification allows Dapps to verify users’
+    credentials inside a Smart Contract using zero-knowledge proof
+    cryptography.
+
+Quick Start
+
+You can quickly try out the Verification experience by following the
+steps below:
+
+-   Download the Polygon ID Wallet App and create an Identity. > - For
+    Android: Polygon ID on Google Play > - For iOS: Polygon ID on the
+    App Store
+-   Fetch a credential from the Issuer Node UI testing environment.
+-   Verify it on the Demo Verifier.
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+The on-chain verification workflow allows dApps to verify users’
+credentials inside a Smart Contract. Zero-Knowledge Proof cryptography
+enables this verification to happen privately, that means, without
+revealing any personal information of the user (prover).
+
+This flow is especially needed in cases where further on-chain logic
+needs to be implemented on successful verification such as:
+
+-   Distributing a token airdrop only to human-verified accounts
+-   Allowing voting only to account members of your DAO
+-   Blocking airdrops to users that belong to a specific country
+-   Allowing trading only to accounts that passed the KYC verification
+
+On-chain verification flow
+
+At its core, every on-chain interaction between a Verifier and a user’s
+Wallet follows this workflow:
+
+1.  After having deployed a Verifier Smart Contract, the Verifier
+    designs a Request for the users. This has to be recorded on-chain
+    inside the Verifier Smart Contract.
+2.  The Request is delivered to the user within a QR code (or via
+    deep-linking, depending on the implementation).
+3.  The user scans the QR code using his/her mobile ID wallet and parses
+    the request
+4.  The application fetches the revocation status of the requested
+    credential from the Issuer of that credential.
+5.  A ZK proof is generated on mobile according to the request of the
+    website and based on the credentials held in his/her wallet. This
+    also contains the ZK proof that the credential is not revoked.
+6.  The user sends the ZK proof to the Verifier Smart Contract.
+7.  The Verifier Smart Contract verifies the zk Proof.
+8.  The Verifier Smart Contract checks that the State of the Issuer of
+    the credential and the State of the user are still valid and have
+    not been revoked.
+9.  If the verification is successful, the Verifier executes the logic
+    defined in the Smart Contract.
+
+Note that an active action from the Verifier is only required at step 1.
+All the rest of the interaction is between the user and the Smart
+Contract. All the verification logic is executed programmatically inside
+the Smart Contract.
+
+Implement an ERC20 ZK Airdrop
+
+In this tutorial, we will create an ERC20 ZK Airdrop Contract. The
+chosen query criterium is to be born before 01/01/2002. Users that can
+prove that they were born before that date will be able to get the
+airdrop. Otherwise, they will not. The proof submitted to the Smart
+Contract will not reveal any information about the specific date of
+birth of the user as we are using zero knowledge.
+
+To set up a different query check out the ZK Query Language section.
+
+This tutorial is based on the verification of a Credential of Type
+KYCAgeCredential with an attribute birthday with a Schema URL
+https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld.
+
+The prerequisite is that users have the Polygon ID Wallet app installed
+and self-issued a Credential of type KYC Age Credential Merklized using
+our Demo Issuer
+
+The full executable code related to this tutorial can be cloned from
+this repository.
+
+Design the ERC20 zk Airdrop Verifier Contract
+
+Let us jump into the code by writing the ERC20Verifier contract.
+
+The ERC20Verifier is an ERC20 standard contract with a few other
+features. The extra functionality is given by the zero-knowledge proof
+verification. All the functions dedicated to the ZK verification are
+contained inside the ZKPVerifier Contract and inherited within the
+ERC20Verifier. For example, users will submit their proof to claim the
+airdrop by calling submitZKPResponse.
+
+The ERC20Verifier contract must define at least a single
+TRANSFER_REQUEST_ID. This is the Identifier of the request that the
+contract is making to the user.
+
+    pragma solidity ^0.8.16;
+
+    import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+    import {PrimitiveTypeUtils} from "@iden3/contracts/lib/PrimitiveTypeUtils.sol";
+    import {ICircuitValidator} from "@iden3/contracts/interfaces/ICircuitValidator.sol";
+    import {ZKPVerifier} from "@iden3/contracts/verifiers/ZKPVerifier.sol";
+
+    contract ERC20Verifier is ERC20, ZKPVerifier {
+        uint64 public constant TRANSFER_REQUEST_ID = 1;
+
+        // define the amount of token to be airdropped per user
+        uint256 public TOKEN_AMOUNT_FOR_AIRDROP_PER_ID = 5 * 10**uint(decimals());
+
+        constructor(
+            string memory name_,
+            string memory symbol_
+        ) ERC20(name_, symbol_) {}   
+
+    }
+
+The ZKPVerifier Contract provides 2 hooks:
+
+_beforeProofSubmit and _afterProofSubmit. These hooks are called before
+and after any proof gets submitted and can be used to create
+personalized logic inside your Smart Contract.
+
+In this specific case, it must be checked that the sender of the proof
+matches the address contained in the proof challenge. This requirement
+is necessary to prevent proof front-running. This condition is added
+inside _beforeProofSubmit.
+
+The airdrop logic must be added inside _afterProofSubmit. The contract
+must execute the airdrop once the proof is correctly verified.
+
+```solidity {4, 5, 13, 14, 15, 16, 17, 28, 29, 30, 31, 32} contract
+ERC20Verifier is ERC20, ZKPVerifier { uint64 public constant
+TRANSFER_REQUEST_ID = 1;
+
+    mapping(uint256 => address) public idToAddress;
+    mapping(address => uint256) public addressToId;
+
+    uint256 public TOKEN_AMOUNT_FOR_AIRDROP_PER_ID =
+        5 * 10 ** uint256(decimals());
+
+    constructor(
+        string memory name_,
+        string memory symbol_
+    ) ERC20(name_, symbol_) {}
+
+    function _beforeProofSubmit(
+        uint64 /* requestId */,
+        uint256[] memory inputs,
+        ICircuitValidator validator
+    ) internal view override {
+        // check that  challenge input is address of sender
+        address addr = PrimitiveTypeUtils.int256ToAddress(
+            inputs[validator.inputIndexOf("challenge")]
+        );
+        // this is linking between msg.sender and
+        require(
+            _msgSender() == addr,
+            "address in proof is not a sender address"
+        );
+    }
+
+    function _afterProofSubmit(
+        uint64 requestId,
+        uint256[] memory inputs,
+        ICircuitValidator validator
+    ) internal override {
+        require(
+            requestId == TRANSFER_REQUEST_ID && addressToId[_msgSender()] == 0,
+            "proof can not be submitted more than once"
+        );
+
+        // get user id
+        uint256 id = inputs[1];
+        // additional check didn't get airdrop tokens before
+        if (idToAddress[id] == address(0) && addressToId[_msgSender()] == 0) {
+            super._mint(_msgSender(), TOKEN_AMOUNT_FOR_AIRDROP_PER_ID);
+            addressToId[_msgSender()] = id;
+            idToAddress[id] = _msgSender();
+        }
+    }
+
+}
+
+
+    Finally, we can add a further element of security inside the Smart Contract: prevent any type of token transfer (even after the airdrop) unless users passed the proof verification. This last condition is added by overriding the ERC20 `_beforeTokenTransfer` function and checking that the receiver address `to` of the transfer is included inside the 
+    <a href="https://github.com/iden3/contracts/blob/master/contracts/verifiers/ZKPVerifier.sol#L28" target="_blank">`proofs`</a> mapping. 
+
+    ```solidity {29, 30, 31, 32, 33}
+    contract ERC20Verifier is ERC20, ZKPVerifier {
+        uint64 public constant TRANSFER_REQUEST_ID = 1;
+
+        mapping(uint256 => address) public idToAddress;
+        mapping(address => uint256) public addressToId;
+
+        uint256 public TOKEN_AMOUNT_FOR_AIRDROP_PER_ID =
+            5 * 10 ** uint256(decimals());
+
+        constructor(
+            string memory name_,
+            string memory symbol_
+        ) ERC20(name_, symbol_) {}
+
+        function _beforeProofSubmit(
+            uint64 /* requestId */,
+            uint256[] memory inputs,
+            ICircuitValidator validator
+        ) internal view override {
+            ...
+        }
+
+        function _afterProofSubmit(
+            uint64 requestId,
+            uint256[] memory inputs,
+            ICircuitValidator validator
+        ) internal override {
+           ...
+        }
+
+        function _beforeTokenTransfer(
+            address /* from */,
+            address to,
+            uint256 /* amount */
+        ) internal view override {
+            require(
+                proofs[to][TRANSFER_REQUEST_ID] == true,
+                "only identities who provided proof are allowed to receive tokens"
+            );
+        }
+    }
+
+The contract is now fully written!
+
+Deploy the Contract
+
+:::note “Hardhat”
+
+For this tutorial, we are using the Hardhat development environment to
+facilitate the contract deployment. You can learn how to get started
+with this tool by checking their documentation.
+
+:::
+
+Execute this Hardhat script to deploy the contract:
+
+    async function main() {
+      const verifierContract = "ERC20Verifier";
+      const verifierName = "ERC20zkAirdrop";
+      const verifierSymbol = "zkERC20";
+
+      const ERC20Verifier = await ethers.getContractFactory(verifierContract);
+      const erc20Verifier = await ERC20Verifier.deploy(
+        verifierName,
+        verifierSymbol
+      );
+
+      await erc20Verifier.deployed();
+      console.log(verifierName, " contract address:", erc20Verifier.address);
+    }
+
+The contract ERC20Verifier must be deployed on the Mumbai test network
+as there is a set of supporting contracts that are already deployed on
+Mumbai.
+
+    npx hardhat run polygon-mumbai scripts/deploy.js
+
+Set the ZKP Request
+
+The actual ZKP request “to be born before 01/01/2002” hasn’t been added
+to the Smart Contract yet. To do so it is necessary to call
+setZKPRequest function inherited inside the ERC20Verifier which takes 2
+inputs:
+
+1.  requestId: the ID associated with the request.
+2.  request: ZKPRequest struct. ZKPRequest struct contains 3 fields:
+    1.  metadata: contract invoke request.
+    2.  validator the address of the Validators Smart Contract already
+        deployed on Mumbai. This is the contract that executes the
+        verification on the ZK proof submitted by the user. It can be of
+        type CredentialAtomicQuerySigValidator or
+        CredentialAtomicQueryMTPValidator.
+    3.  data encoded bytes of CredentialAtomicQuery struct.
+
+CredentialAtomicQuery struct contains 10 fields: 1. schema namely the
+bigInt representation of the schema of the requested credential. This
+can be obtained by passing your schema to this Go Sandbox. In order to
+use the sandbox, the constants jsonLDContext, typ, fieldName and
+schemaJSONLD need to be modified according to your request. 2.
+claimPathKey represents the path to the queries key inside the merklized
+credential. In this case, it is the path to the birthday key. This can
+be obtained by passing your schema to this Go Sandbox. In order to use
+the sandbox, the constants jsonLDContext, typ, fieldName and
+schemaJSONLD need to be modified according to your request. 3. operator
+is either 1,2,3,4,5,6. To understand more about the operator you can
+check the zk query language. 4. slotIndex represents specific position
+for data in claim. 5. value represents the threshold value you are
+querying. In this case, it is the date 01/01/2002. 6. queryHash is the
+poseidon hash of schemaHash, slotIndex, operator, claimPathKey,
+claimPathNotExists, valueHash. Used for gas consumption optimization. 7.
+allowedIssuers represents the allowed issuers of the credential. 8.
+circuitIds is an array of circuit IDs
+([‘credentialAtomicQuerySigV2OnChain’] or
+[‘credentialAtomicQueryMTPV2OnChain’]). 9. skipClaimRevocationCheck
+checks whether the credential revocation will be checked during the
+proof generation. 10. claimPathNotExists: 0 or 1; 0 for inclusion in
+merklized credentials, 1 for non-inclusion and for non-merklized
+credentials.
+
+To encode these fields to structure, use this function:
+
+    const { Web3 } = require('web3');
+
+    function packValidatorParams(query, allowedIssuers = []) {
+      let web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
+      return web3.eth.abi.encodeParameter(
+        {
+          CredentialAtomicQuery: {
+            schema: 'uint256',
+            claimPathKey: 'uint256',
+            operator: 'uint256',
+            slotIndex: 'uint256',
+            value: 'uint256[]',
+            queryHash: 'uint256',
+            allowedIssuers: 'uint256[]',
+            circuitIds: 'string[]',
+            skipClaimRevocationCheck: 'bool',
+            claimPathNotExists: 'uint256'
+          }
+        },
+        {
+          schema: query.schema,
+          claimPathKey: query.claimPathKey,
+          operator: query.operator,
+          slotIndex: query.slotIndex,
+          value: query.value,
+          queryHash: query.queryHash,
+          allowedIssuers: allowedIssuers,
+          circuitIds: query.circuitIds,
+          skipClaimRevocationCheck: query.skipClaimRevocationCheck,
+          claimPathNotExists: query.claimPathNotExists
+        }
+      );
+    }
+
+Calculate query hash:
+
+    const { poseidon } = require('@iden3/js-crypto');
+    const { SchemaHash } = require('@iden3/js-iden3-core');
+    const { prepareCircuitArrayValues } = require('@0xpolygonid/js-sdk');
+
+    function calculateQueryHash(
+      values,
+      schema,
+      slotIndex,
+      operator,
+      claimPathKey,
+      claimPathNotExists
+    ) {
+      const expValue = prepareCircuitArrayValues(values, 64);
+      const valueHash = poseidon.spongeHashX(expValue, 6);
+      const schemaHash = coreSchemaFromStr(schema);
+      const quaryHash = poseidon.hash([
+        schemaHash.bigInt(),
+        BigInt(slotIndex),
+        BigInt(operator),
+        BigInt(claimPathKey),
+        BigInt(claimPathNotExists),
+        valueHash
+      ]);
+      return quaryHash;
+    }
+
+    function coreSchemaFromStr(schemaIntString) {
+      const schemaInt = BigInt(schemaIntString);
+      return SchemaHash.newSchemaHashFromInt(schemaInt);
+    };
+
+Check out our Smart Contract section to learn more about the set of
+verifications executed on the zk proof.
+
+Execute this Hardhat script to set the ZK request to the Smart Contract:
+
+    const { Web3 } = require('web3');
+    const { poseidon } = require('@iden3/js-crypto');
+    const { SchemaHash } = require('@iden3/js-iden3-core');
+    const { prepareCircuitArrayValues } = require('@0xpolygonid/js-sdk');
+
+    const Operators = {
+      NOOP : 0, // No operation, skip query verification in circuit
+      EQ : 1, // equal
+      LT : 2, // less than
+      GT : 3, // greater than
+      IN : 4, // in
+      NIN : 5, // not in
+      NE : 6   // not equal
+    }
+
+    function packValidatorParams(query, allowedIssuers = []) {
+      let web3 = new Web3(Web3.givenProvider || 'ws://localhost:8545');
+      return web3.eth.abi.encodeParameter(
+        {
+          CredentialAtomicQuery: {
+            schema: 'uint256',
+            claimPathKey: 'uint256',
+            operator: 'uint256',
+            slotIndex: 'uint256',
+            value: 'uint256[]',
+            queryHash: 'uint256',
+            allowedIssuers: 'uint256[]',
+            circuitIds: 'string[]',
+            skipClaimRevocationCheck: 'bool',
+            claimPathNotExists: 'uint256'
+          }
+        },
+        {
+          schema: query.schema,
+          claimPathKey: query.claimPathKey,
+          operator: query.operator,
+          slotIndex: query.slotIndex,
+          value: query.value,
+          queryHash: query.queryHash,
+          allowedIssuers: allowedIssuers,
+          circuitIds: query.circuitIds,
+          skipClaimRevocationCheck: query.skipClaimRevocationCheck,
+          claimPathNotExists: query.claimPathNotExists
+        }
+      );
+    }
+
+    function coreSchemaFromStr(schemaIntString) {
+      const schemaInt = BigInt(schemaIntString);
+      return SchemaHash.newSchemaHashFromInt(schemaInt);
+    };
+
+    function calculateQueryHash(
+      values,
+      schema,
+      slotIndex,
+      operator,
+      claimPathKey,
+      claimPathNotExists
+    ) {
+      const expValue = prepareCircuitArrayValues(values, 64);
+      const valueHash = poseidon.spongeHashX(expValue, 6);
+      const schemaHash = coreSchemaFromStr(schema);
+      const quaryHash = poseidon.hash([
+        schemaHash.bigInt(),
+        BigInt(slotIndex),
+        BigInt(operator),
+        BigInt(claimPathKey),
+        BigInt(claimPathNotExists),
+        valueHash
+      ]);
+      return quaryHash;
+    }
+
+    async function main() {
+
+      // you can run https://go.dev/play/p/3id7HAhf-Wi to get schema hash and claimPathKey using YOUR schema
+      const schemaBigInt = "74977327600848231385663280181476307657"
+
+      const type = 'KYCAgeCredential';
+      const schemaUrl = 'https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld';
+       // merklized path to field in the W3C credential according to JSONLD  schema e.g. birthday in the KYCAgeCredential under the url "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld"
+      const schemaClaimPathKey = "20376033832371109177683048456014525905119173674985843915445634726167450989630"
+
+      const requestId = 1;
+
+      const query = {
+        requestId,
+        schema: schemaBigInt,
+        claimPathKey: schemaClaimPathKey,
+        operator: Operators.LT,
+        slotIndex: 0,
+        value: [20020101, ...new Array(63).fill(0)], // for operators 1-3 only first value matters
+        circuitIds: ['credentialAtomicQuerySigV2OnChain'],
+        skipClaimRevocationCheck: false,
+        claimPathNotExists: 0
+        };
+      
+      query.queryHash = calculateQueryHash(
+            query.value,
+            query.schema,
+            query.slotIndex,
+            query.operator,
+            query.claimPathKey,
+            query.claimPathNotExists
+          ).toString();
+
+      // add the address of the contract just deployed
+      const ERC20VerifierAddress = "<ERC20VerifierAddress>"
+
+      let erc20Verifier = await hre.ethers.getContractAt("ERC20Verifier", ERC20VerifierAddress)
+
+
+      const validatorAddress = "0x1E4a22540E293C0e5E8c33DAfd6f523889cFd878"; // sig validator
+      // const validatorAddress = "0x0682fbaA2E4C478aD5d24d992069dba409766121"; // mtp validator
+
+      const invokeRequestMetadata = {
+            id: '7f38a193-0918-4a48-9fac-36adfdb8b542',
+            typ: 'application/iden3comm-plain-json',
+            type: 'https://iden3-communication.io/proofs/1.0/contract-invoke-request',
+            thid: '7f38a193-0918-4a48-9fac-36adfdb8b542',
+            body: {
+              reason: 'airdrop participation',
+              transaction_data: {
+                contract_address: ERC20VerifierAddress,
+                method_id: 'b68967e2',
+                chain_id: 80001,
+                network: 'polygon-mumbai'
+              },
+              scope: [
+                {
+                  id: query.requestId,
+                  circuitId: query.circuitIds[0],
+                  query: {
+                    allowedIssuers: ['*'],
+                    context: schemaUrl,
+                    credentialSubject: {
+                      birthday: {
+                        $lt: query.value[0]
+                      }
+                    },
+                    type
+                  }
+                }
+              ]
+            }
+          };
+
+      try {
+        const txId = await erc20Verifier.setZKPRequest(
+            requestId, {
+            metadata: JSON.stringify(invokeRequestMetadata),
+            validator: validatorAddress,
+            data: packValidatorParams(query)
+          });
+        console.log("Request set");
+      } catch (e) {
+        console.log("error: ", e);
+      }
+    }
+
+The contract is now correctly deployed on Mumbai Testnet and the query
+has been set up, congratulations! Now it is time to launch the airdrop!
+
+Add the Proof Request Inside a QR Code
+
+The last step is to design the proof request to be embedded inside a QR
+code. In this particular case this is how the request should look like
+(remember to modify it by adding the address of your ERC20Verifier
+Contract):
+
+    {
+        "id": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "typ": "application/iden3comm-plain-json",
+        "type": "https://iden3-communication.io/proofs/1.0/contract-invoke-request",
+        "thid": "7f38a193-0918-4a48-9fac-36adfdb8b542",
+        "body": {
+            "reason": "airdrop participation",
+            "transaction_data": {
+                "contract_address": "<ERC20VerifierAddress>",
+                "method_id": "b68967e2",
+                "chain_id": 80001,
+                "network": "polygon-mumbai"
+            },
+            "scope": [
+                {
+                    "id": 1,
+                    "circuitId": "credentialAtomicQuerySigV2OnChain",
+                    "query": {
+                        "allowedIssuers": [
+                            "*"
+                        ],
+                        "context": "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json-ld/kyc-v3.json-ld",
+                        "credentialSubject": {
+                            "birthday": {
+                                "$lt": 20020101
+                            }
+                        },
+                        "type": "KYCAgeCredential"
+                    }
+                }
+            ]
+        }
+    }
+
+  The scope section inside the JSON file must match the query previously
+  set when calling the setZKPRequest function.
+
+Note that the request resembles, in most of its parts, the one designed
+for off-chain verification. The extra part that has been added here is
+the transcation_data that includes:
+
+-   contract_address, namely the address of the Verifier contract, in
+    this case, ERC20Verifier.
+-   method_id, namely the Function Selector of the submitZKPResponse
+    function.
+-   chain_id, the ID of the chain where the Smart Contract has been
+    deployed.
+-   network, the name of the network where the Smart contract has been
+    deployed.
+
+  To display the QR code inside your frontend, you can use the
+  express.static built-in middleware function together with this Static
+  Folder or this Code Sandbox.
+
+Scanning the QR with their Polygon ID Wallet, users will be able to
+generate proofs and send transactions to the Smart Contract in order to
+request credentials for their airdrops.
+
+The same proof generation request can also be delivered to users via
+Deep Linking. In order to do so, it is necessary to encode the JSON file
+to Base64 Format. The related deep link would be
+iden3comm://?i_m={{base64EncodedJsonHere}}. For example, in this
+specific case the deep link would be:
+iden3comm://?i_m=ewogICAgImlkIjogIjdmMzhhMTkzLTA5MTgtNGE0OC05ZmFjLTM2YWRmZGI4YjU0MiIsCiAgICAidHlwIjogImFwcGxpY2F0aW9uL2lkZW4zY29tbS1wbGFpbi1qc29uIiwKICAgICJ0eXBlIjogImh0dHBzOi8vaWRlbjMtY29tbXVuaWNhdGlvbi5pby9wcm9vZnMvMS4wL2NvbnRyYWN0LWludm9rZS1yZXF1ZXN0IiwKICAgICJ0aGlkIjogIjdmMzhhMTkzLTA5MTgtNGE0OC05ZmFjLTM2YWRmZGI4YjU0MiIsCiAgICAiYm9keSI6IHsKICAgICAgICAicmVhc29uIjogImFpcmRyb3AgcGFydGljaXBhdGlvbiIsCiAgICAgICAgInRyYW5zYWN0aW9uX2RhdGEiOiB7CiAgICAgICAgICAgICJjb250cmFjdF9hZGRyZXNzIjogIjxFUkMyMFZlcmlmaWVyQWRkcmVzcz4iLAogICAgICAgICAgICAibWV0aG9kX2lkIjogImI2ODk2N2UyIiwKICAgICAgICAgICAgImNoYWluX2lkIjogODAwMDEsCiAgICAgICAgICAgICJuZXR3b3JrIjogInBvbHlnb24tbXVtYmFpIgogICAgICAgIH0sCiAgICAgICAgInNjb3BlIjogWwogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAiaWQiOiAxLAogICAgICAgICAgICAgICAgImNpcmN1aXRJZCI6ICJjcmVkZW50aWFsQXRvbWljUXVlcnlTaWdWMk9uQ2hhaW4iLAogICAgICAgICAgICAgICAgInF1ZXJ5IjogewogICAgICAgICAgICAgICAgICAgICJhbGxvd2VkSXNzdWVycyI6IFsKICAgICAgICAgICAgICAgICAgICAgICAgIioiCiAgICAgICAgICAgICAgICAgICAgXSwKICAgICAgICAgICAgICAgICAgICAiY29udGV4dCI6ICJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vaWRlbjMvY2xhaW0tc2NoZW1hLXZvY2FiL21haW4vc2NoZW1hcy9qc29uLWxkL2t5Yy12My5qc29uLWxkIiwKICAgICAgICAgICAgICAgICAgICAiY3JlZGVudGlhbFN1YmplY3QiOiB7CiAgICAgICAgICAgICAgICAgICAgICAgICJiaXJ0aGRheSI6IHsKICAgICAgICAgICAgICAgICAgICAgICAgICAgICIkbHQiOiAyMDAyMDEwMQogICAgICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgICAgICAgICAidHlwZSI6ICJLWUNBZ2VDcmVkZW50aWFsIgogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgXQogICAgfQp9
+
+Claim the Airdrop
+
+You can directly test it by scanning the QR Code below using your
+Polygon ID App:
+
+How is the proof submission executed?
+
+The wallet needs to call the submitZKPResponse() function before it can
+submit the proof for the requirements set in the Airdrop Participation
+process. This function forms part of the ZKPVerifier Interface
+IZKPVerifier and is actually implemented inside the ZKPVerifier
+Contract.
+
+    import "./ICircuitValidator.sol";
+
+    interface IZKPVerifier {
+        function submitZKPResponse(
+            uint64 requestId,
+            uint256[] memory inputs,
+            uint256[2] memory a,
+            uint256[2][2] memory b,
+            uint256[2] memory c
+        ) external;
+    }
+
+Extend it to Your Own Logic
+
+Now that you have been able to create your first on-chain ZK-based
+application, you can extend it to accommodate any type of imaginable
+logic. The target Smart Contract doesn’t have to be an ERC20 but it can
+be an ERC721, a DeFi pool, a voting Smart Contract or whatever contract
+you can think of. Equally, the query can be extended to any type of
+existing Credential and based on the different operators available
+inside the ZK Query Language.
+
+Another possibility to customize your Smart Contract involves setting
+different ZK requests. First of all, multiple REQUEST_ID must be defined
+inside the main Smart Contract. Therefore, the contract deployer can set
+a different query for each request ID and create different outcomes
+inside _afterProofSubmit according to the type of proof received. For
+example, an airdrop contract can verify the role of a user inside a DAO
+and distribute a different amount of tokens based on the role.
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’; import Tabs from
+‘@theme/Tabs’; import TabItem from ‘@theme/TabItem’;
+
+This article details the steps to set up your own Issuer Node Core API.
+
+The content of the QR code provided by the Issuer or Verifier has
+changed since the release 2.3.0 of the Issuer node. Instead of sending
+the JSON information through the QR code, now we provide an embedded
+link to a page where this JSON is hosted, which improves the application
+performance. Please check the IDEN3MESSAGE_PARSER.md file for more
+information on how to parse the new QR code content.
+
+Installation
+
+For an advance configuration of the Issuer Node (RHS, Ethereum
+Identities and more), visit the Advanced Issuer Node configuration
+guide.
+
+There are two options for installing and running the server alongside
+the UI:
+
+1.  Docker Setup Guide
+2.  Standalone Mode Guide
+
+We encourage the use of Standalone for production environments.
+
+For either one, you first have to clone the repository.
+
+Standalone Mode Guide
+
+Standalone Mode Guide Requirements
+
+-   Docker Engine 1.27
+-   Makefile toolchain
+-   Unix-based operating system (e.g. Debian, Arch, Mac OS X)
+-   Go version 1.19 or higher
+-   Postgres
+-   Redis
+-   Hashicorp Vault
+
+Standalone Mode Setup
+
+1.  Env files configuration:
+
+1.1. Copy the config sample files
+
+    cp .env-issuer.sample .env-issuer
+    cp .env-api.sample .env-api
+
+1.2. Fill the .env-issuer config file with the proper variables
+
+:::info For advanced Issuer Node configurations, visit the Advanced
+Issuer Node configuration guide. :::
+
+.env-issuer
+bash   ISSUER_ETHEREUM_URL=<YOUR_RPC_PROVIDER_URI_ENDPOINT>   ISSUER_DATABASE_URL=<YOUR_POSTGRESQL_DB_INSTANCE>   ISSUER_REDIS_URL=<YOUR_REDIS_INSTANCE>   ISSUER_KEY_STORE_ADDRESS=<YOUR_VAULT_INSTANCE>   ISSUER_SERVER_URL=<PUBLICLY_ACCESSIBLE_URL_POINTING_TO_ISSUER_SERVER_PORT>
+
+1.3. Enable vault authentication
+
+    make add-vault-token
+
+1.4. Write the private key in the vault. This step is needed in order to
+be able to transit the issuer’s state. To perform that action the given
+account has to be funded. For Mumbai network you can request some
+testing Matic here.
+
+    make private_key=<YOUR_WALLET_PRIVATE_KEY> add-private-key
+
+2.  Run make build-local. This will generate a binary for each of the
+    following commands:
+    -   platform
+    -   platform_ui
+    -   migrate
+    -   pending_publisher
+    -   notifications
+3.  Run make db/migrate. This command checks the database structure and
+    applies the necessary changes to the database schema.
+4.  Run ./bin/platform command to start the issuer.
+5.  Run ./bin/pending_publisher. This checks that publishing
+    transactions to the blockchain works.
+6.  (Optional) Run ./bin/notifications. This enables push notifications
+    when issuing credentials to PID Wallet.
+
+  Core API specification - http://localhost:3001/
+
+------------------------------------------------------------------------
+
+Related guides:
+
+How to Set Up Issuer Node UI Guide
+
+Advanced Issuer Node Configuration
+
+Quick Start Demo
+-e 
+
+---
+
+
+This guide presents an example of how to use the on-chain issuer. We
+created a small application, where we communicate with Metamask to
+retrieve the user’s balance and a claim about this balance is generated
+via the on-chain issuer.
+
+There are three main components in this application:
+
+1.  On-chain issuer (demo|contract)
+2.  Server for user authorization
+3.  Front-end component for communication with Metamask
+
+Requirements:
+
+1.  Node js => 18.x
+2.  Go => 1.20.x
+3.  npm => 9.x.x
+4.  docker => 20.x
+5.  Polygon ID wallet app
+
+How to run the On-chain Issuer
+
+1.  Clone this repository:
+    bash     git clone https://github.com/0xPolygonID/onchain-issuer-integration-demo
+
+    All the variables which need to be altered are in the run.sh file:
+
+        ONCHAIN_ISSUER_CONTRACT_ADDRESS=<ONCHAIN_ISSUER_CONTRACT_ADDRESS>
+        URL_MUMBAI_NODE=<URL_TO_POLYGON_MUMBAI_NODE>
+        URL_POLYGON_NODE=<URL_TO_POLYGON_MAINNET_NODE>
+        ONCHAIN_CONTRACT_OWNER=<PRIVATE_KEY_IS_USED_FOR_DEPLOY_ONCHAIN_ISSUER_CONTRACT>
+        MUMBAI_CONTRACT_STATE_ADDRESS=0x134B1BE34911E39A8397ec6289782989729807a4
+        MAIN_CONTRACT_STATE_ADDRESS=0x624ce98D2d27b20b8f8d521723Df8fC4db71D79D
+        ONCHAIN_ISSUER_CONTRACT_BLOCKCHAIN=<BLOCKCHAIN_OF_ISSUER_CONTRACT>
+        ONCHAIN_ISSUER_CONTRACT_NETWORK=<BLOCKCHAIN_OF_WITH_ISSUER_CONTRACT>
+
+2.  Deploy an on-chain issuer contract. You can use this sample here or
+    create your own smart contract with custom logic.
+
+    Use the following State Contract addresses:
+
+    -   For mumbai network: 0x134B1BE34911E39A8397ec6289782989729807a4
+    -   For mainnet network: 0x624ce98D2d27b20b8f8d521723Df8fC4db71D79D
+
+    :::note
+
+    You can find more information on how to deploy a smart contract
+    using Hardhat in this readme.
+
+    :::
+
+3.  Fill in the configuration files with the actual values.
+
+    -   ONCHAIN_ISSUER_CONTRACT_ADDRESS should be retrieved from the
+        smart contract deployment.
+    -   URL_MUMBAI_NODE is easily acquired with any Infrastructure
+        provider, such as Alchemy, Infura etc.
+    -   URL_POLYGON_NODEis easily acquired with any Infrastructure
+        provider, such as Alchemy, Infura etc.
+    -   ONCHAIN_CONTRACT_OWNER is where a private key should be set to
+        deploy the contract.
+    -   MUMBAI_CONTRACT_STATE_ADDRESS represents the already deployed
+        Mumbai State Contract and shouldn’t be changed.
+    -   MAIN_CONTRACT_STATE_ADDRESS represents the already deployed
+        Mainnet State Contract and shouldn’t be changed.
+    -   ONCHAIN_ISSUER_CONTRACT_BLOCKCHAIN sets the blockchain where the
+        on-chain issuer contract was deployed as eth or polygon.
+    -   ONCHAIN_ISSUER_CONTRACT_NETWORK sets the blockchain network
+        where the on-chain issuer contract was deployed, as main, mumbai
+        or goerli.
+
+4.  Run the run.sh script: bash     ./run.sh
+
+Don’t forget to download and install the Polygon ID wallet app before
+you go the next steps.
+
+-   For Android: Polygon ID on Google Play
+-   For iOS: Polygon ID on the App Store
+
+Issue and fetch credential
+
+1.  Open http://localhost:3000 in your web browser and click on Sign Up.
+
+         <img width="300" src="/img/onchain-issuer-1.png"></img>
+
+2.  Scan the QR code with your Polygon ID wallet app and follow the
+    instructions on the application.
+
+         <img width="300" src="/img/onchain-issuer-2.png"></img>
+
+3.  You will see your DID and now you can connect to MetaMask. Follow
+    the flow on the MetaMask app.
+
+         <img width="600" src="/img/onchain-issuer-3.png"></img>
+
+4.  The on-chain issuer application will now display your account. You
+    can get your balance in gwei.
+
+         <img width="600" src="/img/onchain-issuer-4.png"></img>
+
+5.  The account balance will be shown in gwei together with some other
+    information about the claim.
+
+         <img width="700" src="/img/onchain-issuer-5.png"></img>
+
+6.  Clicking on Get Claim will finally lead to the QR Code used to fetch
+    the credential with MTP proof. Here we are making a request to the
+    on-chain issuer node. This node then saves this claim in a contract
+    address. Scan it with the Polygon ID wallet and the credential
+    should be added to the mobile app.
+
+         <img width="500" src="/img/onchain-issuer-6.png"></img>
+
+Here is the credential on the mobile app:
+
+    <img width="300" src="/img/onchain-issuer-7.png"></img>
+
+How to verify the balance claim
+
+1.  Go to the Verifier website.
+
+2.  Choose custom from the dropdown menu.
+
+         <img width="400" src="/img/onchain-issuer-8.png"></img>
+
+3.  Fill up the form.
+
+    -   Circuit Id: Credential Atomic Query MTP;
+    -   URL:
+        https://gist.githubusercontent.com/ilya-korotya/b06baa37453ed9aedfcb79100b84d51f/raw/balance-v1.jsonld
+    -   Type: BalanceCredential
+    -   Field: balance
+    -   Operator: all the operators work for the claim. More information
+        here
+    -   Value: set the value that you want to verify.
+
+    Here is an example:
+
+         <img width="600" src="/img/onchain-issuer-9.png"></img>
+
+4.  Press submit.
+
+5.  Use the mobile application to scan the QR code and complete the
+    verification process. The verifier will check the revocation status
+    and additional information and the proof will be sent to the
+    verifier. The Verifier website will present then the proof
+    information.
+
+         <img width="600" src="/img/onchain-issuer-10.png"></img>
+-e 
+
+---
+
+
+The On-chain Issuer is a way of issuing credentials by leveraging the
+full power of a smart contract. As it is commonly known, a smart
+contract is software that resides in a blockchain network, meaning that
+its code and data aren’t necessarily stored in a server, but rather
+distributed in a decentralized manner. Therefore, an on-chain issuer
+could be considered a decentralized issuer, as all the underlying logic
+of the credentials is written on a smart contract with its inherent
+publicity.
+
+This issuance method then serves as an alternative to the Issuer Node,
+whose implementation depends on a dedicated setup and its own
+infrastructure.
+
+The fact that all this logic is present on the blockchain enables
+credential issuance for DAOs in a programmatic way. It can also be
+useful for entities like oracles and on-chain analytics companies since
+the contract code can be audited and verified.
+
+On-chain issuance
+
+On-chain issuance is trustless or trust-minimized, depending on smart
+contract business logic. It reduces dependency on non-auditable
+decisions for issuing credentials. The properties of smart contracts
+make them good candidates to act as trusted attestation services since
+the attestation mechanism is transparent and auditable to everyone. This
+serves as an alternative to a number of centralized issuers for use
+cases when an Identity needs to issue credentials about themselves or
+their activity, which can be verified by the smart contract logic.
+
+In simple words, you can see everything happening: all the logic used to
+generate the credential is live on the blockchain and ready to be
+checked and verified.
+
+An On-chain Issuer, in fact, is a special case of the On-chain Identity.
+You can find more information about it on the Iden3 documentation.
+
+Smart contracts
+
+Smart contracts generate and manage identities. They can also manage
+Merkle Trees on-chain. Each issuer has its own identity contract. Each
+contract, which is linked to an identity, will have its own custom
+verification logic: what they are issuing and to whom.
+
+There are still the possibilities of either using one smart contract
+with a set of different business logic for specific credentials or
+having one smart contract for each use case.
+
+[On chain Issuance]
+
+Some of the methods that can be performed by the Smart Contract:
+
+-   Add claim / claim hash
+-   Revoke claim
+-   Build credential
+
+There is a set of features to be implemented in Solidity and provided to
+developers, protocols or dApps. You would have to integrate it as a
+library or as a standalone contract, thus controlling the identity of
+your users.
+
+Possible use cases
+
+There are many possible use cases enabled by an on-chain issuer. One of
+them is the possibility of the ID holder using an application to check
+their own data validity and send a zero-knowledge proof to an on-chain
+issuer, which will be responsible for generating a verifiable
+credential.
+
+Another way of using the on-chain issuer is gathering available data
+on-chain for a particular identity and producing a verifiable credential
+from it. In fact, on-chain issuers enable two categories of credentials:
+public and private ones.
+
+Public use cases
+
+A public credential will leverage all the available data of a particular
+address and aggregate it to generate a claim, such as a reputation
+score, linked to an identity. There is no personal information revealed
+and it can be made available on-chain.
+
+In this case, the value is in the aggregation of large amounts of
+information into ready-to-use credentials that are linked to an
+identity. This way, the identity holder could prove his assets without
+disclosing the Ethereum accounts that control these assets.
+
+Some interesting examples of public use cases would be:
+
+-   An oracle that summarizes the on-chain activity of one account could
+    issue a credential to an identity holder that proves control of that
+    address. Then, the identity holder could present a zero-knowledge
+    proof of that credential to operate on DAOs, DEFI, etc.
+-   Signing a transaction to a smart contract could trigger the creation
+    of a credential attesting to the ownership of a crypto address by a
+    DID holder.
+
+Private use cases
+
+On the other hand, private credentials usually stem from privately-held
+data that are used for self-attestation, meaning that the ID holder is
+able to create a credential himself with his data and share
+zero-knowledge proofs of its validity.
+
+When the information used to generate the credential contains personal
+data that shouldn’t be on-chain, a zk-circuit is used to verify that the
+credentials were built correctly. In this case, the credential is
+generated off-chain by the end user in a way that includes some
+cryptographic proofs of validity.
+
+After generating the credential and using a contract-specific circuit,
+the application that generated the credential could send a
+zero-knowledge proof of “Validity of Credential” to the on-chain issuer
+smart contract. Then, what the Smart Contract would verify is that there
+is a Verifiable Credential that was built following a certain process
+(that includes the cryptographical proof of validity, such as government
+public keys).
+
+In this scenario, the value is in allowing end users to leverage
+existing cryptographic proofs of different types that they have
+available (government keys, JWT tokens in Web2 accounts etc) to
+self-issue credentials that they can add to their identities.
+
+Some interesting examples of private use cases would be:
+
+-   A user performs a self-attestation of their identity backed by the
+    government public signature. Circuits running privately on a user’s
+    mobile phone could verify the input of an NFC chip, build a
+    credential and then send the transaction to a smart contract, which
+    will be able to verify proof and issue (by adding its hash to claims
+    Merkle tree) a credential from it.
+-   Using JWT claims from Web2 applications through a browser
+    extension - i.e. creating a credential with a date of birth and
+    address from a company store.
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+DID with Ethereum address
+
+Currently available only on the Issuer Node Core API, this feature
+enables the creation of Ethereum-controlled identities. Ethereum
+accounts are used here to authenticate, prove statements and control
+identity. The representation of the DID for this case follows the same
+canonical form, where the identifier
+2qCU58EJgrELSJT6EzT27Rw9DhvwamAdbMLpePztYq actually originates from the
+Ethereum address:
+
+    did:polygonid:polygon:mumbai:2qCU58EJgrELSJT6EzT27Rw9DhvwamAdbMLpePztYq
+
+Due to its public nature, the Ethereum Polygon DID doesn’t support
+private profiles.
+
+Revocation Status
+
+Mobile applications can get the Revocation Status of a particular
+credential by requesting that information straight from the Issuer Node.
+However, if the Issuer Node is offline for some reason, that
+communication would not work. The Revocation Hash Service and the
+On-chain Revocation Status are two solutions for this issue.
+
+Revocation Hash Service
+
+The Revocation Hash Service (RHS) stores all the revocation information
+online which can be accessed by mobile applications and verifiers. In
+this scenario, the communication between mobile and Revocation Hash
+service replaces the link between the application and the Issuer Node:
+
+As the diagram shows, the Issuer Node sends the revocation information
+to the RHS. The service, then, is able to return the credential status
+to the application.
+
+On-chain Revocation
+
+On-chain Revocation status leverages the blockchain decentralized
+storage to make the revocation information permanent on the network.
+That means that, even if the Issuer Node or the Revocation Hash Service
+is down, the data is still available on-chain.
+
+Non-merklized credentials
+
+Non-merklized credentials are specially important for on-chain issuers,
+because smart contracts built on Solidity can’t fetch JSON-LD schemas
+directly via HTTP or IPFS.
+
+Here is an example of a non-merklized schema. Compare it to this
+merklized one. Notice that the schema is defined by utilizing an
+iden3_serialization attribute.
+
+Read more about non-merklized credentials on the Iden3 documentation.
+-e 
+
+---
+
+
+The Demo Issuer is a playground that allows you to create credentials
+without having to set up an Issuer Node and fetch it inside your wallet.
+
+Prerequisites
+
+Download the Polygon ID Wallet App and create an Identity.
+
+-   For Android: Polygon ID on Google Play
+-   For iOS: Polygon ID on the App Store
+
+Quick Start
+
+To create a credential, you require a schema that contains semantics of
+the JSON vocabulary and is used to describe a large number of data sets.
+The schema contains links to JSON-LD Context and JSON URL.
+
+For this tutorial, we will be using a customized Schema named
+ProofOfDaoLongevity that attests to someone’s entryDate inside a DAO.
+You can find more info about that schema and how to create a custom
+Schema.
+
+To create a credential, the Polygon ID app must be installed on your
+mobile.
+
+1.  On the Issuer website, click Sign up.
+
+    []
+
+    It shows the QR code on screen:
+
+    []
+
+2.  Open the Polygon ID app and authenticate with PIN/Biometrics.
+
+    []
+
+3.  On the app, click Connect.
+
+    []
+
+4.  With the app, scan the QR code displayed on the site and click
+    Connect Wallet.
+
+    []
+
+5.  Authenticate again with your PIN/Biometrics. This starts the
+    authentication of the user’s wallet.
+
+    []
+
+    After the authentication process is complete, the app shows the
+    message if the identity is successfully authenticated or if it
+    failed to authenticate.
+
+    []
+
+    At this point, the Issuer has received information about your
+    Identifier (DID) and can use it as the subject of the credential
+    that will be issued in the next step.
+
+6.  On the website, click on Create Claim.
+
+    []
+
+    This shows the Create Claim window:
+
+    []
+
+7.  Click on the Schema dropdown menu and select the type of schema you
+    want to use for creating credentials.
+
+    Two schemas types are already available in the drop-down menu:
+    KYCAgeCredential and KYCCountryOfResidenceCredential.
+
+    If you want to use a custom schema, select Custom from the drop-down
+    menu.
+
+    For this example, we are using the ProofOfDaoLongevity schema
+    created in the Create Custom Schemas tutorial.
+
+    The menu needs to be populated with the JSON Schema URL and the Type
+    of the schema. Which in this case are:
+
+    -   https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/proof-of-dao-longevity.json
+    -   ProofOfDaoLongevity
+
+    The expiration date sets the date on which the credential will
+    expire.
+
+    The Data JSON contains the actual data that the credential is
+    attesting to. In this case, the credential contains a single field
+    entryDate that needs to be populated with the date the user joined
+    the DAO.
+
+    Once filled up, click Submit.
+
+    []
+
+    This creates a new credential. Scan the QR code from the wallet app
+    to fetch the credential in the wallet.
+
+    []
+
+8.  Once a credential is created, you can view it on the Issuer site.
+    For this, click the icon to open and view the credential.
+
+    []
+
+This shows all the information related to a credential; this includes:
+
+-   @Context (JSON-LD Schema) and CredentialSchema (JSON) URLs
+-   credentialStatus: URL to fetch the Revocation status of the
+    credential from the Issuer along with the revocation nonce.
+-   credentialSubject: Information related to the Subject of the
+    Credential. In this example, this includes subject’s entryDate and
+    id of the Subject in the did format.
+-   Other information such as expiration date of the credential,
+    issuance date, and ID of the Issuer in the did format.
+-   Proof which includes information such as state of the issuer
+    identity published on-chain, the non-revocation proof for the
+    authorization claim, and the actual credential signed by the Issuer.
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+Issuer Node Core API
+
+The Issuer Node Core API is ideal for users who need multiple identities
+and for integrator profiles, who want to create solutions based on
+Polygon ID functionalities and might be interested in having access to
+low level information such as Merkle Trees.
+
+Issuer Node Components
+
+The Issuer Node comprises the following components and each one of these
+components can be either dockerized or launched as a separate service.
+
+-   Issuer Application to issue Verifiable Credentials and communicate
+    with users’ wallets.
+
+-   Vault: Based on HashiCorp, the Vault is used in the Issuer Node for
+    providing key management services. It is utilized to protect the
+    user sensitive data by securing their private key. The Vault has
+    been provided with a plugin called vault-plugin-secrets-iden3; this
+    plugin is used to sign the data with Baby Jubjub Keys that are
+    stored in the Vault.
+
+-   Redis: Redis is used for caching the schemas that we use in the
+    Issuer Node. The schemas are downloaded from IPFS and stored on
+    Redis. This way, every time the Issuer Node issues a credential, it
+    doesn’t need to fetch the schemas from an external source; it can
+    fetch it directly from Redis. This boosts the performance of the
+    application.
+
+-   DB: This container is used as the data source for the Issuer Node.
+    In our implementation of the Issuer Node, we have used Postgres as
+    the database. It is where all the data related to issued credentials
+    are stored.
+
+In a testing environment, you can run the Vault, Redis, and Postgres
+services inside a docker. For production environments, you are advised
+to secure these services first before using them.
+
+Issuer Node Core API architecture.
+-e 
+
+---
+
+
+Create Custom Schemas
+
+Polygon ID offers an intuitive, user-friendly interface to create
+schemas: the Schema Builder. Here you can find a tutorial for this tool.
+You can also access it on https://schema-builder.polygonid.me/.
+
+A Schema Type encodes the structure of a particular Verifiable
+Credential (VC) by defining the type, the fields that must be included
+inside the VC, and a description for these fields.
+
+Schemas are a crucial component that allows for the interoperable use of
+VCs across different services. Just by parsing a schema, any program can
+interpret the content of a Verifiable Credential without having to
+interact with Issuer Party.
+
+In order to issue Verifiable Credentials, you can refer to existing
+schemas. If the existing ones are not able to describe the type of data
+you desire, you need to create your own schema Type.
+
+A schema type is made of two documents:
+
+-   JSON-LD Context, which contains a description of the type and its
+    fields. Here is an example of JSON-LD Context for Schema Type
+    CodingExperienceCredential
+
+-   JSON Schema which contains the validation rules for the Issuer Node.
+    Here is an example of a JSON Schema for Schema Type
+    CodingExperienceCredential.
+
+Without further ado, let’s jump into building a new Schema Type!
+
+Tutorial
+
+The executable code and further schemas examples for this section can be
+found here.
+
+Let’s suppose we are a DAO that wants to issue VCs to its members and
+there are no existing schemas that can accommodate this type of data
+attestation. In order to issue these VCs, a schema of type
+ProofOfDaoLongevity needs to be created. This example will show you how
+to create a schema type that contains a single field. You can always
+extend it to include more fields.
+
+1. Define which field to include in the schema
+
+The ProofOfDaoLongevity should include a field defined entryDate able to
+attest to the specific date when one joined the DAO. A credential can
+contain as many fields as you want!
+
+2. Create the vocabulary of the Schema Type
+
+Create a markdown file in your GIT repository to describe the vocabulary
+used inside the Schema Type. We decide to name the file
+proof-of-dao-longevity-vocab.md. This should contain a description of
+the (only) field entryDate included in the schema type.
+
+    # entryDate
+
+    Describes the date when a contributor joined the DAO
+
+3. Create the JSON-LD Context
+
+Create a .jsonld file in your repository to contain the JSON-LD Context
+of the Schema Type. We decide to name it proof-of-dao-longevity.jsonld.
+
+The JSON-LD Context contains:
+
+-   the name of the Type
+
+-   its unique identifier @id which is a public URL where the context
+    can be resolved.
+
+    If you are working on Github, you can fetch the URL directly from
+    your published repository based on the file path. In this case it is
+
+    https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/proof-of-dao-longevity.jsonld#ProofOfDaoLongevity
+
+-   the definition of the vocabulary with its URL
+
+    In this case we create a field defined vocab and attach the URL that
+    identifies the vocabulary. In this case it is
+
+    https://github.com/0xPolygonID/tutorial-examples/blob/main/credential-schema/proof-of-dao-longevity-vocab.md#
+
+-   The field that we want to include inside the credential, defined
+    together with its identifier and its data type (all xsd data type
+    are available)
+
+    json {8,9,15,17,18,19}    {     "@context": [       {         "@version": 1.1,         "@protected": true,         "id": "@id",         "type": "@type",         "ProofOfDaoLongevity": {           "@id": "https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/proof-of-dao-longevity.jsonld#ProofOfDaoLongevity",           "@context": {             "@version": 1.1,             "@protected": true,             "id": "@id",             "type": "@type",             "vocab": "https://github.com/0xPolygonID/tutorial-examples/blob/main/credential-schema/proof-of-dao-longevity-vocab.md#",             "xsd": "http://www.w3.org/2001/XMLSchema#",             "entryDate": {               "@id": "vocab:entryDate",               "@type": "xsd:integer"             }           }         }       }     ]   }
+
+The underlined lines are the only ones that need to be modified in order
+to create a new Schema Type.
+
+5. Create the JSON Schema
+
+Finally, we have to create the JSON Schema Document. We decide to name
+it proof-of-dao-longevity.json. This is a document that contains the
+serialization rule and the instruction for the Issuer to build
+Verifiable Credentials based on a specific schema type and spot any
+error in the process. Although it might seem complex and verbose, there
+are just a few values that need to be updated to adapt to your purpose:
+
+-   Add the URIs to your specific jsonLdContext and jsonSchema:
+
+-   Inside CredentialSubject update the information related to your
+    field:
+
+json {6,7,109,117,118}  {     "$schema": "http://json-schema.org/draft-07/schema#",     "type": "object",     "$metadata": {       "uris": {         "jsonLdContext": "https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/proof-of-dao-longevity.jsonld",         "jsonSchema": "https://raw.githubusercontent.com/0xPolygonID/tutorial-examples/main/credential-schema/proof-of-dao-longevity.json"       }     },     "required": [       "@context",       "id",       "type",       "issuanceDate",       "credentialSubject",       "credentialSchema",       "credentialStatus",       "issuer"     ],     "properties": {       "@context": {         "type": [           "string",           "array",           "object"         ]       },       "id": {         "type": "string"       },       "type": {         "type": [           "string",           "array"         ],         "items": {           "type": "string"         }       },       "issuer": {         "type": [           "string",           "object"         ],         "format": "uri",         "required": [           "id"         ],         "properties": {           "id": {             "type": "string",             "format": "uri"           }         }       },       "issuanceDate": {         "type": "string",         "format": "date-time"       },       "expirationDate": {         "type": "string",         "format": "date-time"       },       "credentialSchema": {         "type": "object",         "required": [           "id",           "type"         ],         "properties": {           "id": {             "type": "string",             "format": "uri"           },           "type": {             "type": "string"           }         }       },       "subjectPosition": {         "type": "string",         "enum": [           "none",           "index",           "value"         ]       },       "merklizationRootPosition": {         "type": "string",         "enum": [           "none",           "index",           "value"         ]       },       "revNonce": {         "type": "integer"       },       "version": {         "type": "integer"       },       "updatable": {         "type": "boolean"       },       "credentialSubject": {         "type": "object",         "required": [           "id",           "entryDate"         ],         "properties": {           "id": {             "title": "Credential Subject ID",             "type": "string",             "format": "uri"           },           "entryDate": {             "type": "integer"           }         }       }     }   }
+
+6. Publish it!
+
+If you were working on a GITgit repository, push all the files, make
+sure that the repo is public and that’s it!
+
+Further Resources
+
+-   JSON-LD - W3C VC Standard
+-   JSON-LD Context - W3C VC Standard
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’; import Tabs from
+‘@theme/Tabs’; import TabItem from ‘@theme/TabItem’;
+
+This article details the steps to achieve full integration of the Issuer
+Node with the Polygon ID APIs, as well as instructs on how to set up an
+intuitive user interface to manage credentials.
+
+The content of the QR code provided by the Issuer or Verifier has
+changed since the release 2.3.0 of the Issuer node. Instead of sending
+the JSON information through the QR code, now we provide an embedded
+link to a page where this JSON is hosted, which improves the application
+performance. Please check the IDEN3MESSAGE_PARSER.md file for more
+information on how to parse the new QR code content.
+
+Installation
+
+There are two options for installing and running the UI:
+
+1.  Docker Setup Guide
+2.  Standalone Mode Guide
+
+We encourage the use of Standalone for production environments.
+
+For either one, you first have to clone the repository.
+
+Standalone Mode Guide
+
+Standalone Mode Guide Requirements
+
+-   Have followed the Core-API Standalone Mode Guide. (Step 4 of the
+    Standalone Mode Setup is not mandatory as the UI uses an extended
+    version of the Core API)
+-   npm installed
+
+Standalone Mode Setup
+
+1.  Env file configuration:
+
+.env-api
+bash   ISSUER_API_UI_SERVER_URL=<PUBLICLY_ACCESSIBLE_URL_POINTING_TO_ISSUER_API_UI_SERVER_PORT>
+
+2.  Create an identity as your issuer DID.
+    bash       make generate-issuer-did
+3.  Run ./bin/platform_ui command to start the issuer-ui API.
+4.  Configure and deploy the UI
+
+Completing the installation process yields the UI as a minified
+Javascript app. Any changes to the UI source code would necessitate a
+full re-build to apply them. In most development scenarios this is
+undesirable, so the UI app can also be run in development mode like any
+React application to enable hot module replacement (HMR).
+
+4.1. Make sure that the UI API is set up and running properly (default
+http://localhost:3002).
+
+4.2. Go to the ui/ folder.
+
+4.3. Copy the .env.sample file as .env
+
+4.4. The UI requires some of the configurations already present in the
+parent folder files .env-api and .env-ui. Here it’s the list of
+variables required by the UI and the mapping between them and the
+variables present in the parent config files, grouped by file. Please
+make sure the values match.
+
+Variables from .env-api:
+
+      - `VITE_API_URL -> ISSUER_API_UI_SERVER_URL`
+      - `VITE_API_USERNAME -> ISSUER_API_UI_AUTH_USER`
+      - `VITE_API_PASSWORD -> ISSUER_API_UI_AUTH_PASSWORD`
+      - `VITE_ISSUER_NAME -> ISSUER_API_UI_ISSUER_NAME`
+      - `VITE_ISSUER_LOGO -> ISSUER_API_UI_ISSUER_LOGO`
+      - `VITE_ISSUER_DID -> ISSUER_API_UI_ISSUER_DID`
+
+Variables from .env-ui:
+
+      - `VITE_BLOCK_EXPLORER_URL -> ISSUER_UI_BLOCK_EXPLORER_URL`
+      - `VITE_BUILD_TAG -> ISSUER_UI_BUILD_TAG`
+      - `VITE_WARNING_MESSAGE -> ISSUER_UI_WARNING_MESSAGE`
+      - `VITE_IPFS_GATEWAY_URL -> ISSUER_UI_IPFS_GATEWAY_URL`
+      - `VITE_SCHEMA_EXPLORER_AND_BUILDER_URL -> ISSUER_UI_SCHEMA_EXPLORER_AND_BUILDER_URL`
+
+4.5. Run npm install
+
+4.6. Run npm start
+
+4.7. The app will be running on http://localhost:5173.
+
+  API UI specification - http://localhost:3002/
+
+  UI - http://localhost:8088/
+
+------------------------------------------------------------------------
+
+Related guides:
+
+How to Set Up Issuer Node Core API Guide
+
+Advanced Issuer Node Configuration
+
+Quick Start Demo
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+In order to create new types of credentials, it is necessary to generate
+JSON schemas. These are the underlying files that define the credential
+attributes.
+
+The Schema Builder is a tool created to simplify the process of creating
+schemas by using an intuitive user interface and enabling everyone to
+check previously made schemas.
+
+Learn more about the Schema Explorer in the video below:
+
+Schema Explorer
+
+The Schema Builder landing page presents a Schema Explorer, where you
+can find all previously created schemas and drill down your search for
+specific kinds of schemas. Not all schemas need to be created from
+scratch.
+
+We highly recommend that you look for one of the available schemas
+before actually creating one. By doing so, you can save time for your
+project and leverage a full library of popular ready-to-use schemas. If
+you find a schema that is similar to what you need but you are not
+completely happy with its characteristics, you can always fork it and
+add your own attributes.
+
+Forking a schema is similar to GitHub forks. It creates a copy of the
+schema and lets you define new attributes. So you build your own out of
+another one.
+
+The outcome of a forked schema shows its version and where it was forked
+from. [Fork Version]
+
+The forked schema also shows its number of forks:
+
+[Forks]
+
+Schema Builder
+
+As previously stated, the Schema Builder is the easiest way to generate
+new types of credentials as it allows users to define the attributes,
+data types, and constraints for their schemas. The tool will then
+generate the necessary JSON-LD files and other artifacts required to
+implement the schema.
+
+Schema form and its JSON outcome.
+
+If you already have access to a file containing a JSON schema or a URL
+where that schema might be located, you can always add it to the Schema
+Builder by clicking on the Import Schema button. Then you will be able
+to edit, create new JSON and JSON-LD files and publish it on IPFS.
+
+[Import Schema]
+
+Learn more about the Schema Builder in the video below:
+
+Schema definition
+
+The first page of the Schema Builder flow lets you define the basic
+aspects of the schema, namely its title, type, version and description.
+
+-   Title: a name for the schema.
+-   Schema Type: similar to (and in most cases coincides with) the
+    schema name. The text provided in this field will become the name of
+    the type in the JSON LD context associated with this schema.
+-   Version: this is important to register the current version of the
+    schema, as it might be updated in the future.
+-   Description: a description of the schema should explain in simple
+    terms what it will be used for.
+
+Attributes
+
+You can add multiple attributes to your schema. All of them need to have
+the following characteristics: name, title, data type and description.
+
+-   Name: the name of the attribute with a limited use of characters.
+-   Title: a more human-readable title for the attribute without
+    restrictions for special characters or space.
+-   Data type: the kind of data the schema will support, such as
+    integer, string, boolean etc.
+-   Description: a short human-readable explanation of the attribute.
+
+Learn about the advanced features of the Schema Builder in the video
+below:
+
+Publish on IPFS or Download JSON file
+
+The last step of building a new schema is publishing it on IPFS. As an
+alternative, you can download the JSON file and store it in the location
+of your choice.
+
+:::info Non-merklized credentials
+
+Non-merklized credentials are specially important for on-chain issuers,
+because Solidity can’t fetch JSON-LD schemas directly via HTTP or IPFS.
+
+Here is an example of a non-merklized schema. Compare it to this
+merklized one. Notice that the schema is defined by utilizing an
+iden3_serialization attribute.
+
+Read more about non-merklized credentials on the Iden3 documentation.
+:::
+-e 
+
+---
+
+
+Schema examples
+
+Here are some schemas with different data types.
+
+Boolean
+
+schema:
+https://raw.githubusercontent.com/0xPolygonID/issuer-node/main/docs/examples/schemas/json/exampleBoolean.json
+
+type: CodingExperienceCredential
+
+body:
+
+    {
+        "credentialSchema": "https://raw.githubusercontent.com/0xPolygonID/sh-id-platform/adding-schema-examples/docs/examples/schemas/json/exampleBoolean.json",
+        "type": "CodingExperienceCredential",
+        "credentialSubject": {
+            "id": "did:polygonid:polygon:mumbai:2qLPX9XnujT2xhuiPMHrqXTUD96UCV87CtThRUZFQm",
+            "codingExperience": true
+        },
+        "expiration": "2025-04-05T08:34:07.117Z",
+        "signatureProof": true,
+        "mtProof": false
+    }
+
+Date / Date-time
+
+schema:
+https://raw.githubusercontent.com/0xPolygonID/issuer-node/main/docs/examples/schemas/json/exampleDate.json
+
+type: HireDateCredential
+
+body:
+
+    {
+        "credentialSchema": "https://raw.githubusercontent.com/0xPolygonID/sh-id-platform/adding-schema-examples/docs/examples/schemas/json/exampleDate.json",
+        "type": "HireDateCredential",
+        "credentialSubject": {
+            "id": "did:polygonid:polygon:mumbai:2qLPX9XnujT2xhuiPMHrqXTUD96UCV87CtThRUZFQm",
+            "hireDate": "2020-12-12"
+        },
+        "expiration": "2025-04-05T08:34:07.117Z",
+        "signatureProof": true,
+        "mtProof": false
+    }
+
+Integer
+
+schema:
+https://raw.githubusercontent.com/0xPolygonID/issuer-node/main/docs/examples/schemas/json/exampleInteger.json
+
+type: BirthdayCredential
+
+body:
+
+    {
+        "credentialSchema": "https://raw.githubusercontent.com/0xPolygonID/sh-id-platform/adding-schema-examples/docs/examples/schemas/json/exampleInteger.json",
+        "type": "BirthdayCredential",
+        "credentialSubject": {
+            "id": "did:polygonid:polygon:mumbai:2qLPX9XnujT2xhuiPMHrqXTUD96UCV87CtThRUZFQm",
+            "birthday": 20201012
+        },
+        "expiration": "2025-04-05T08:34:07.117Z",
+        "signatureProof": true,
+        "mtProof": false
+    }
+
+Number (float/double)
+
+schema:
+https://raw.githubusercontent.com/0xPolygonID/issuer-node/main/docs/examples/schemas/json/exampleNumber.json
+
+type: SalaryCredential
+
+body:
+
+    {
+        "credentialSchema": "https://raw.githubusercontent.com/0xPolygonID/sh-id-platform/adding-schema-examples/docs/examples/schemas/json/exampleNumber.json",
+        "type": "SalaryCredential",
+        "credentialSubject": {
+            "id": "did:polygonid:polygon:mumbai:2qLPX9XnujT2xhuiPMHrqXTUD96UCV87CtThRUZFQm",
+            "salary": 1000.0
+        },
+        "expiration": "2025-04-05T08:34:07.117Z",
+        "signatureProof": true,
+        "mtProof": false
+    }
+
+String
+
+schema:
+https://raw.githubusercontent.com/0xPolygonID/issuer-node/main/docs/examples/schemas/json/exampleString.json
+
+type: RoleCredential
+
+body:
+
+    {
+        "credentialSchema": "https://raw.githubusercontent.com/0xPolygonID/sh-id-platform/adding-schema-examples/docs/examples/schemas/json/exampleString.json",
+        "type": "RoleCredential",
+        "credentialSubject": {
+            "id": "did:polygonid:polygon:mumbai:2qLPX9XnujT2xhuiPMHrqXTUD96UCV87CtThRUZFQm",
+            "role": "developer"
+        },
+        "expiration": "2025-04-05T08:34:07.117Z",
+        "signatureProof": true,
+        "mtProof": false
+    }
+
+Full example - multiple types
+
+schema:
+https://raw.githubusercontent.com/0xPolygonID/issuer-node/main/docs/examples/schemas/json/exampleEmployee.json
+
+type: EmployeeCredential
+
+body:
+
+    {
+        "credentialSchema": "https://raw.githubusercontent.com/0xPolygonID/sh-id-platform/adding-schema-examples/docs/examples/schemas/json/exampleEmployee.json",
+        "type": "EmployeeCredential",
+        "credentialSubject": {
+            "id": "did:polygonid:polygon:mumbai:2qLPX9XnujT2xhuiPMHrqXTUD96UCV87CtThRUZFQm",
+            "role": "developer",
+            "hireDate":"2022-10-10",
+            "birthday": 19901204,
+            "salary": 10000.0,
+            "codingExperience": true
+        },
+        "expiration": "2025-04-05T08:34:07.117Z",
+        "signatureProof": true,
+        "mtProof": false
+    }
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+Issuer Node UI
+
+The Issuer Node UI provides the full experience of having an Issuer Node
+with all its capabilities. Although it offers only a single identity, it
+also presents a few extra features, such as establishing connections and
+importing schemas. It comes in an API format but there is also the
+possibility of generating a full-fledged user interface.
+
+Issuer Node API UI with Managing Schemas, Credentials and other
+functionalities:
+
+Issuer Node User Interface with a more visual experience:
+
+Issuer Node Components
+
+The Issuer Node comprises the following components and each one of these
+components can be either dockerized or launched as a separate service.
+
+-   Issuer Application to issue Verifiable Credentials and communicate
+    with users’ wallets.
+
+-   Vault: Based on HashiCorp, the Vault is used in the Issuer Node for
+    providing key management services. It is utilized to protect the
+    user sensitive data by securing their private key. The Vault has
+    been provided with a plugin called vault-plugin-secrets-iden3; this
+    plugin is used to sign the data with Baby Jubjub Keys that are
+    stored in the Vault.
+
+-   Redis: Redis is used for caching the schemas that we use in the
+    Issuer Node. The schemas are downloaded from IPFS and stored on
+    Redis. This way, every time the Issuer Node issues a credential, it
+    doesn’t need to fetch the schemas from an external source; it can
+    fetch it directly from Redis. This boosts the performance of the
+    application.
+
+-   DB: This container is used as the data source for the Issuer Node.
+    In our implementation of the Issuer Node, we have used Postgres as
+    the database. It is where all the data related to issued credentials
+    are stored.
+
+In a testing environment, you can run the Vault, Redis, and Postgres
+services inside a docker. For production environments, you are advised
+to secure these services first before using them.
+
+Issuer Node UI API architecture.
+-e 
+
+---
+
+
+Core Library
+
+-   Issuer Node
+
+Support Libraries
+
+-   go Iden3 Core: Go implementation of iden3 core functionality
+-   go Iden3 Crypto: Go implementation of important cryptographic
+    elements including baby jubjub key, Keccak256, and poseidon
+-   go Merkle Tree SQL: Go implementation of Merkle tree based on the
+    library of circuit templates
+-e 
+
+---
+
+
+Authenticating with Vault in Issuer Node: Two Options Explained
+
+The issuer node supports two authentication alternatives to securely
+store private keys and DIDs within Vault. In this article, we’ll guide
+you through utilizing each of these alternatives assuming you’re running
+the issuer node using Docker and Docker Compose.
+
+Authentication via Vault Token
+
+This option, an older method utilized by the issuer node, relies on
+using the root token generated by Vault upon its initialization.
+
+To employ this method, follow these steps:
+
+1.  Set the following environment variable in the .env-issuer file:
+
+    ISSUER_VAULT_USERPASS_AUTH_ENABLED=false
+
+    Another option is to remove the ISSUER_VAULT_USERPASS_AUTH_ENABLED
+    entry from the file to get the default value (false)
+
+2.  Run the command below to add the Vault token to the .env-issuer
+    configuration file:
+
+    make add-vault-token
+
+After step 2, the .env-issuer configuration file should contain an entry
+similar to this:
+
+ISSUER_KEY_STORE_TOKEN=hvs.HW8Qup9s6LBUA0ff8Q1TO6Uc
+
+Finally, start or restart the issuer node to ensure it includes the
+change in the file.
+
+You can verify the token generated by Vault to match it with the value
+in the .env-issuer file using this command:
+
+    `make print-vault-token`
+
+This command will print the Vault token in the terminal, and it should
+match the one configured in the .env-issuer file.
+
+Authentication via Username and Password
+
+Upon Vault startup, an initialization script is executed. Among its
+tasks, it creates the user issuernode with the password issuernodepwd
+for the issuer node. To use this authentication alternative in Vault,
+follow these steps:
+
+1.  Set the following environment variables in the .env-issuer file:
+
+    ISSUER_VAULT_USERPASS_AUTH_ENABLED=true
+
+    ISSUER_VAULT_USERPASS_AUTH_PASSWORD=issuernodepwd
+
+2.  Restart the issuer node if necessary.
+
+You might want to change the password for the issuernode user. To do
+this, follow these steps:
+
+1.  Execute make new_password=new_password change-vault-password
+2.  Update the value of the environment variable in the .env-issuer
+    file: ISSUER_VAULT_USERPASS_AUTH_PASSWORD=new_password
+3.  Restart the issuer node if necessary.
+
+:::tip Which Option to Choose?
+
+Well, it depends on the context, where you’re running the issuer node,
+and whether you have permissions to access the Vault-generated token.
+
+:::
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+Verifiable Presentations leveraging ZK Proofs
+
+The owner of a credential can prove to another party that a credential
+is true, without revealing any information beyond the validity of the
+credential itself using zkSNARK cryptography.
+
+The Verifier can request any proof of the information contained in the
+identity credential (using the zkQuery Request Language) and obtain
+guaranteed correctness without access to the private credential.
+
+There are two ways those credentials can be issued: using BJJ key
+Signature or Merkle Tree Proof.
+
+SIG Method: Issuance of Credentials with Baby JubJub(BJJ) Key Signatures
+
+The credential is not added to the Issuer’s Merkle tree, instead a Baby
+Jubjub (BJJ) signature is used which is then verified upon presentation.
+With this method, issuers can issue a large number of credentials
+without needing to spend any gas to issue the credentials.
+
+MTP Method: Issuance of Credentials with Merkle Tree Proof
+
+The validation of the proof is done against the state published
+on-chain. No personal information is stored on-chain. A key difference
+with this method is that the identity state has to be published on-chain
+(the hash of the merkle trees), since the Identity State Transition
+function has to be executed.
+
+Another important difference is that through this method smart contracts
+can issue credentials. The estimated cost of calling this function is
+approximately 2 million gas on average ( 0.36 MATIC in the Polygon PoS
+mainnet as of June 2023). Furthermore, credential issuance batching
+could be done to optimize the gas cost of the issuance process.
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+The Credential Marketplace is the go-to place for verifiers to find
+trusted sources for specific credentials related to their business
+cases. With an ever-growing set of options, verifiers can compare and
+choose from a variety of credential providers and select the most
+suitable ones for their needs.
+
+It also offers an environment for issuers to display the credentials
+they are offering and demonstrate to the community how their credentials
+can solve business cases.
+
+The marketplace is convenient for all the players in the self-sovereign
+identity environment: it is trustworthy for the verifier as it provides
+a curated set of trusted issuers and brings potential new customers for
+issuers.
+
+The Credential Marketplace provides visibility for everyone involved in
+the decentralized identity business, be they an issuer, verifier, wallet
+provider, trust network, or system integrator, The ecosystem page,
+coming together with Marketplace, gathers all those participants and
+presents a comprehensive description of their businesses.
+
+:::tip Credential Marketplace Walkthrough
+
+Aside from this article, you can always watch the video below where we
+present the Credential Marketplace’s main features in practice.
+
+:::
+
+What one can do in the Credential Marketplace
+
+  -----------------------------------------------------------------------
+  Verifier                        Issuer
+  ------------------------------- ---------------------------------------
+  Find credentials for specific   Register organizations in the
+  use cases.                      credential marketplace.
+
+  Have a way of contacting        Add, edit and remove credentials from
+  trusted issuers.                their storefront.
+
+  Compare options for credentials Display contact information.
+  and issuers.                    
+  -----------------------------------------------------------------------
+
+How does it work for Issuers?
+
+Issuers can apply to register their organizations within the
+marketplace. Upon successful application, the issuer will have access to
+the issuer portal, where they can set up their company contact
+information and add credentials that they issue. They will then launch
+their credential storefront, which will be visible to everyone.
+
+How does it work for Verifiers?
+
+Verifiers have a carefully selected range of issuers and their
+credentials at their disposal, which might serve as an enforcement for
+the trust between the Issuer and the Verifier. They can contact those
+issuers to sign contracts.
+
+Credentials
+
+Searching for credentials on the Credential Marketplace by using a
+comprehensive filter, where users can consider the major categories,
+pricing, data storage options, credential proof type, compliance and
+many other features.
+
+Ecosystem
+
+The Ecosystem page shows all the projects involved in the Polygon ID
+environment, be they verifiers, credential providers, or other
+organizations from the SSI industry. Those are organizations that really
+stand out with their solutions for the Digital Identity challenge by
+leveraging at least one of Polygon ID’s tools and products.
+
+Issuer Portal
+
+The Issuer Portal is the go-to place for every credential provider who
+wants to join the Polygon ID ecosystem by issuing credentials and thus
+acting as the trust-provider entity in the digital identity industry.
+
+This is the place where Issuers register their organization, by filling
+up a form with their identification:
+
+It is important to note that this is an application process, which means
+that the Polygon ID team reviews all applications and replies to them
+within 2-3 business days.
+
+Managing Credentials
+
+With all set up, Issuers can add, edit and list new credentials and also
+display them on their credential store.
+
+Adding credentials involves setting all of its characteristics, such as
+general information, pricing details and specific credential features.
+
+As one of its first settings, you can decide whether the new credential
+should be visible or not in the marketplace.
+
+Setting up contact information
+
+It is crucial for the credential provider to display relevant
+information for their prospective users. Having filled up the contact
+information form, the issuer will have a comprehensive public profile,
+which will be useful for verifiers and other actors to be in contact and
+request more information about their offering. It is important to note
+that there are a few mandatory fields, such as Organization logo, name,
+description, DIDs, email and website.
+
+Launching credential store
+
+Before the credential store goes live, credential providers need to
+perform 2 tasks:
+
+-   Fill up all mandatory fields from the Contact Information form, as
+    seen above.
+-   Add at least 1 credential to initialize the store.
+
+Taking the store offline
+
+Issuers can make their stores temporarily private without actually
+removing them. This is useful when they want to rework their offering or
+omit their credentials for the moment without deleting them.
+-e 
+
+---
+
+
+import Tabs from ‘@theme/Tabs’; import TabItem from ‘@theme/TabItem’;
+
+Advanced Issuer Node configuration
+
+This guide will show you how to confgure your Issuer Node.
+
+Revocation Status
+
+The revocation status is a core part of the credential, as it is the
+verifier’s way of checking whether or not a credential has been revoked
+by the issuer. The Issuer Node offers three different ways to check the
+revocation status of a credential:
+
+-   Centralized: The verifier or user will check the credential
+    revocation status through the Issuer Node itself, which is why we
+    consider it to be a centralized method. If the node is not
+    available, the verification will fail, resulting in possible errors
+    when trying to generate ZK Proofs.
+
+-   RHS Off Chain: In this case, the credential revocation will be
+    checked in a server independent from the Issuer Node (managed by the
+    Issuer or an independent agent), so that we no longer depend on the
+    Issuer Node as the only point of failure. This service will be a
+    fallback in case the RHS is not available.
+
+-   RHS On Chain: This method can be considered as completely
+    decentralized since the RHS is on chain, therefore the user or
+    verifier will check the status of a credential via this
+    decentralized on chain service without depending on a centralized
+    server. This is the desirable option.
+
+Centralized (default)
+
+In this case we will have to make sure that the Issuer Node is publicly
+accessible.
+
+Core API:
+
+.env-issuer
+
+    ISSUER_CREDENTIAL_STATUS_RHS_MODE=None
+    ISSUER_SERVER_URL={Set a publicly accessible URL for the same $ISSUER_SERVER_PORT}
+
+UI:
+
+.env-api
+
+    ISSUER_API_UI_SERVER_URL={Set a publicly accessible URL for the same $ISSUER_API_UI_SERVER_PORT}
+
+RHS Off Chain
+
+For the RHS Off Chain, there are two options: 1. Use an RHS from a
+reliable entity. 2. Install your own RHS; you can do it with the
+following guide: https://github.com/iden3/reverse-hash-service
+
+Once you have your publicly accessible RHS URL:
+
+.env-issuer
+
+    ISSUER_CREDENTIAL_STATUS_RHS_MODE=OffChain
+    ISSUER_CREDENTIAL_STATUS_RHS_URL={RHS publicly accessible URL}
+
+RHS On Chain
+
+.env-issuer
+
+    ISSUER_CREDENTIAL_STATUS_RHS_MODE=OnChain 
+
+    ISSUER_CREDENTIAL_STATUS_ONCHAIN_TREE_STORE_SUPPORTED_CONTRACT=0x76EB7216F2400aC18C842D8C76739F3B8E619DB9
+    ISSUER_CREDENTIAL_STATUS_RHS_CHAIN_ID=80001
+
+    ISSUER_CREDENTIAL_STATUS_ONCHAIN_TREE_STORE_SUPPORTED_CONTRACT=0x80667fdB4CC6bBa3EDaE419f6BFBc129e78d2fC9
+    ISSUER_CREDENTIAL_STATUS_RHS_CHAIN_ID=137
+
+State Contract
+
+The State Contract stores the Global Identity State Tree. The GIST State
+represents a snapshot of the states of all the identities operating in
+the system. The design of the State Contract allows identities to
+authenticate themselves using Identity Profiles.
+
+Every time that an identity is updated, for example when a credential is
+issued using SMT Proof or revoked, it needs to perform a State
+Transition. This process consists of generating a ZK-proof or a
+digitally-signed message that proves that the identity is authorized to
+perform the state transition. Then the State contract verifies the proof
+on-chain via its transitState (for ZK-proofs) or transitStateGeneric
+(generic, as the name suggests) function.
+
+Learn more about state contract here.
+
+    ISSUER_ETHEREUM_CONTRACT_ADDRESS=0x134B1BE34911E39A8397ec6289782989729807a4
+    ISSUER_ETHEREUM_RESOLVER_PREFIX=polygon:mumbai
+    ISSUER_ETHEREUM_URL={Replace with a Polygon Mumbai RPC}
+
+    ISSUER_ETHEREUM_CONTRACT_ADDRESS=0x624ce98D2d27b20b8f8d521723Df8fC4db71D79D
+    ISSUER_ETHEREUM_RESOLVER_PREFIX=polygon:main
+    ISSUER_ETHEREUM_URL={Replace with a Polygon Main RPC}
+
+Issuer’s DID
+
+Currently there are two options for creating an issuer’s DID: 1. Using a
+Makefile command, generally used for the UI or API-UI. 2. Create
+Identity endpoint of Core API, generally used for the Core API.
+
+Makefile Command
+
+The DID configured for the UI or API-UI works under the following
+rules: 1. if a DID is provided in the .env-api file, it will be checked
+for its existence in the vault. In case it is different from the one in
+the vault, the latter will be updated. 2. If a DID is not provided in
+the file, it will be searched in the vault. 3. When a DID is created
+with this method, it is saved both in the .env-api file and in the
+vault.
+
+.env-api
+
+    ISSUER_API_IDENTITY_BLOCKCHAIN=polygon
+    ISSUER_API_IDENTITY_NETWORK=mumbai
+    ISSUER_API_IDENTITY_METHOD={polygonid | custom method}
+
+    ISSUER_API_IDENTITY_BLOCKCHAIN=polygon
+    ISSUER_API_IDENTITY_NETWORK=main
+    ISSUER_API_IDENTITY_METHOD={polygonid | custom method}
+
+Execute the following make command in order to generate a new DID with
+the .env-api provided blockchain ,network and method. The given command
+will perform the following actions: 1. Replace ISSUER_API_UI_ISSUER_DID
+value with the new DID(.env-api file). 2. Write the new DID in the
+vault.
+
+    make generate-issuer-did
+
+In order to delete the DID from the Vault:
+
+    make delete-did
+
+Core API
+
+The Core API provides the /v1/identities endpoint in order to create an
+identity.
+
+The property type can have two possible values: * BJJ: BJJ keys based
+identity. * ETH: Ethreum based identity.
+
+Create Identity Payload example:
+
+    {
+      "didMetadata": {
+        "method": "polygonid",
+        "blockchain": "polygon",
+        "network": "mumbai",
+        "type": "BJJ"
+      }
+    }
+
+    {
+      "didMetadata": {
+        "method": "polygonid",
+        "blockchain": "polygon",
+        "network": "main",
+        "type": "BJJ"
+      }
+    }
+-e 
+
+---
+
+
+import useBaseUrl from ‘@docusaurus/useBaseUrl’;
+
+An Issuer is any subject that issues Verifiable Credentials. You can
+think of a credential as a statement: something an Issuer says about
+another subject. For example, when a university (Issuer) claims that a
+student (subject) has a degree, this is a credential.
+
+An issuer might be:
+
+-   A DAO that issues “membership claims” to its members.
+-   A Government institution that issues Identity documents to its
+    citizens.
+-   A Face detection Machine Learning application that issues “proof of
+    personhood” claims.
+-   An employer that endorses its employees.
+
+Verifiable Credentials are a flexible data format able to express any
+type of information so that developers can unleash their creativity.
+
+Operating an issuer
+
+There are some different ways one can perform issuer-related actions,
+that is, manage and issue credentials, establish connections with
+holders etc. These are the currently available options:
+
+-   Running an Issuer Node directly in your infrastructure.
+
+-   Utilizing the issuer node available in theGoogle Cloud Marketplace
+    (soon available also on the AWS Marketplace).
+
+-   Adapting the JS SDK to your application that issues credentials.
+
+-   Using SaaS vendors that leverage Polygon ID solutions.
+
+-   Making use of Polygon ID smart contracts for on-chain issuance.
+
+Issuer Nodes
+
+To operate, an Issuer must run an Issuer Node, which is a self-hosted
+Node that exposes all the functionalities necessary to run an issuer.
+
+There are basically two ways the Issuer Node can be implemented:
+
+-   Issuer Node Core API
+-   Issuer Node UI
+
+Issuer Node Core API
+
+The Issuer Node Core API is ideal for users who need multiple identities
+and for integrator profiles, who want to create solutions based on
+Polygon ID functionalities and might be interested in having access to
+low-level information such as Merkle Trees.
+
+Issuer Node UI
+
+The Issuer Node UI provides the full experience of having an Issuer Node
+with all its capabilities. Although it offers only a single identity, it
+also presents a few extra features, such as establishing connections and
+importing schemas. It comes in an API format but there is also the
+possibility of generating a full-fledged user interface.
+
+Issuer Node User Interface with a more visual experience:
+
+Issuer Node API UI with Managing Schemas, Credentials and other
+functionalities:
+-e 
+
+---
+
+
